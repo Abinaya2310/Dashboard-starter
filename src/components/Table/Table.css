@@ -1,0 +1,101 @@
+.MuiTableRow-root > * {
+  padding: 10px;
+}
+
+.MuiTableRow-root.MuiTableRow-head > * {
+  font-weight: bold !important;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.Table td,
+th {
+  border: none !important;
+  padding: 15px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.Table {
+  border-radius: 0.7rem !important;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+}
+
+.Table th {
+  background-color:skyblue;
+  color: #fff;
+}
+
+.Table tr {
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s ease;
+}
+
+.Table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.Table td .status {
+  padding: 8px;
+  border-radius: 9px;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+.scrollable-container {
+  max-height: 500px; /* Adjust the height as needed */
+  overflow-y: auto; /* Enables vertical scrolling */
+}
+
+.Details {
+  color: #00b5ff !important;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.Details:hover {
+  color: #008ac1 !important;
+}
+
+.ButtonGroup button {
+  margin-right: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.ButtonGroup button:hover {
+  background-color: #6200ea;
+  color: #fff;
+}
+
+@media screen and (max-width: 1200px) {
+  .Table {
+    width: 100%;
+    margin-top: 2rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .Table {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+
+  .Table th, .Table td {
+    display: block;
+    text-align: right;
+  }
+
+  .Table th::after, .Table td::after {
+    content: ":";
+    display: inline-block;
+    margin-left: 5px;
+  }
+
+  .Table td {
+    text-align: left;
+  }
+}

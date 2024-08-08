@@ -1,0 +1,29 @@
+.MainDash{
+    /* padding-top: 1rem; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.MainDash h1 {
+    font-size: 2rem; /* Larger font size for headings */
+    font-weight: bold; /* Bold text for headings */
+    text-transform: uppercase; /* Uppercase text */
+    color: #333; /* Darker color for contrast */
+    letter-spacing: 0.1rem; /* Space between letters for modern look */
+    margin-bottom: 1rem; /* Margin below heading */
+    font-style: italic; /* Italic text */
+}
+
+@media screen and (max-width: 1200px) {
+    .MainDash{
+        justify-content:flex-start;
+        margin-top: 2rem;
+    }
+}
+
+@media screen and (max-width: 768px)
+{
+    .MainDash{
+        align-items: center;
+    }
+}

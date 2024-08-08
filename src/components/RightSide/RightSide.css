@@ -1,0 +1,51 @@
+.RightSide{
+    display: flex;
+    flex-direction: column;
+    /* padding-top: 1rem; */
+    width: 95%;
+    justify-content: space-evenly;
+}
+
+
+@media screen and (max-width: 1200px) {
+    .RightSide{
+        justify-content: flex-start;
+        margin-top: 3rem;
+    }
+}
+/* Add Button Styles */
+#addRecordBtn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: plum; /* Green background */
+    color: white; /* White text */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+#addRecordBtn:hover {
+    background-color:skyblue; /* Darker green on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+}
+
+@media screen and (max-width: 768px)
+{
+    .RightSide{
+        width: 100%;
+        margin-top: 0;
+    }
+    .RightSide>div{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+
+
+
+
+
+
+}
