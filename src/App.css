@@ -12,22 +12,24 @@
 }
 
 .App {
-  /* padding: 0.5rem 3.5rem; */
   color: var(--black);
   background: linear-gradient(
-    
-    180deg, #a8d5ff 29.63%, #82b3ff 51.55%, #66a3ff 90.85%
+    106.37deg,
+    #a6c8ff 29.63%,
+    #8fbaff 51.55%,
+    #c0dbff 90.85%
   );
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
+  flex-direction: column; /* Allows stacking of content */
 }
 
 .AppGlass {
   display: grid;
-  height: 97%;
+  height: 90%;
   width: 97%;
   background: var(--glass);
   border-radius: 2rem;
@@ -36,15 +38,30 @@
   overflow: hidden;
 }
 
+.Footer {
+  height: 7%;
+  width: 100%;
+  background-color: #242d49;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  padding: 10px;
+  box-shadow: var(--boxShadow);
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
 @media screen and (max-width: 1200px) {
-  .AppGlass{
+  .AppGlass {
     grid-template-columns: 10% 50% auto;
     overflow-y: scroll;
   } 
 }
 
 @media screen and (max-width: 768px) {
-  .AppGlass{
+  .AppGlass {
     grid-template-columns: 1fr;
   } 
 }

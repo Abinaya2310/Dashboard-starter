@@ -1,0 +1,15 @@
+.Footer {
+    height: 5%; /* Made the footer box smaller */
+    width: 100%;
+    background-color: #242d49;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px; /* Reduced font size */
+    padding: 5px; /* Reduced padding */
+    box-shadow: var(--boxShadow);
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+  }
+  

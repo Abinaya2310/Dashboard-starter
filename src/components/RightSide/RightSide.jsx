@@ -13,12 +13,7 @@ const RightSide = () => {
 
   return (
     <div className="RightSide">
-      <div>
-        <h3></h3>
-        <button id="addRecordBtn" onClick={togglePopup}>
-          + Add
-        </button>
-      </div>
+     
       <div>
         <h3>Updates</h3>
         <Updates />

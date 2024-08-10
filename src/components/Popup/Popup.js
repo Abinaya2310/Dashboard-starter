@@ -1,4 +1,3 @@
-import axios from 'axios';
 import 'flatpickr/dist/flatpickr.min.css';
 import React, { useState } from 'react';
 import Flatpickr from 'react-flatpickr';
@@ -8,8 +7,10 @@ const Popup = ({ handleClose, show, addData }) => {
   const [activeTab, setActiveTab] = useState('expense');
   const [selectedExpenseCategory, setSelectedExpenseCategory] = useState('');
   const [selectedIncomeCategory, setSelectedIncomeCategory] = useState('');
+  const [otherDescription, setOtherDescription] = useState(''); // State for description if "Other" is selected
   const [date, setDate] = useState(new Date());
   const [amount, setAmount] = useState('');
+  const [currency, setCurrency] = useState('INR'); // Currency selector state
   const [filePath, setFilePath] = useState('');
   const [file, setFile] = useState(null);
   const [selectedEmoji, setSelectedEmoji] = useState('');
@@ -19,6 +20,7 @@ const Popup = ({ handleClose, show, addData }) => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     setSelectedEmoji(''); // Reset emoji when changing tab
+    setOtherDescription(''); // Reset other description when changing tab
   };
 
   const selectCategory = (category) => {
@@ -28,6 +30,7 @@ const Popup = ({ handleClose, show, addData }) => {
       setSelectedExpenseCategory(category.name);
     }
     setSelectedEmoji(category.emoji);
+    setOtherDescription(''); // Clear description when selecting a category
   };
 
   const handleFileChange = (e) => {
@@ -35,45 +38,22 @@ const Popup = ({ handleClose, show, addData }) => {
     setFilePath(e.target.value);
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const category = activeTab === 'income' ? selectedIncomeCategory : selectedExpenseCategory;
+    const description = category === 'Other' ? otherDescription : '';
 
-    const formData = new FormData();
-    formData.append('date', date);
-    formData.append('amount', amount);
-    formData.append('category', category);
-    formData.append('emoji', selectedEmoji);
-    formData.append('filePath', filePath);
-    if (file) {
-      formData.append('file', file);
-    }
-
-    console.log("Form Data to be sent:", {
-      date,
-      amount,
+    const newData = {
+      id: Date.now(),
+      date: date.toLocaleDateString(),
       category,
-      emoji: selectedEmoji,
-      filePath,
-      file
-    });
+      description, // Store the description for "Other" category
+      expense: activeTab === 'expense' && category !== 'Other' ? `${currency} ${amount}` : description,
+      income: activeTab === 'income' && category !== 'Other' ? `${currency} ${amount}` : description,
+      amount: parseFloat(amount),
+    };
 
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/${activeTab === 'income' ? 'incomes' : 'expenses'}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      console.log("Response data:", response.data);
-      addData({
-        id: Date.now(),
-        date,
-        expense: activeTab === 'expense' ? amount : '',
-        income: activeTab === 'income' ? amount : '',
-        file: file ? file.name : '',
-        amount
-      }); // Add the new data to the table
-      handleClose();
-    } catch (error) {
-      console.error("There was an error saving data!", error);
-    }
+    addData(newData); // Add the new data to the table
+    handleClose();    // Close the popup
   };
 
   const categories = {
@@ -144,7 +124,7 @@ const Popup = ({ handleClose, show, addData }) => {
                   <label htmlFor="expenseDate">Date</label>
                   <Flatpickr
                     options={{ dateFormat: 'Y-m-d' }}
-                    className="flatpickr"
+                    className="flatpickr small-date"
                     value={date}
                     onChange={([date]) => setDate(date)}
                     required
@@ -152,8 +132,31 @@ const Popup = ({ handleClose, show, addData }) => {
                 </div>
                 <div className="amount-container">
                   <label htmlFor="expenseAmount">Amount</label>
-                  <input type="number" id="expenseAmount" name="expenseAmount" value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <select
+                      value={currency}
+                      onChange={(e) => setCurrency(e.target.value)}
+                      style={{ marginRight: '8px' }}
+                    >
+                      <option value="INR">INR</option>
+                      <option value="USD">USD</option>
+                    </select>
+                    <input type="number" id="expenseAmount" name="expenseAmount" value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                  </div>
                 </div>
+                {selectedExpenseCategory === 'Other' && (
+                  <div className="other-description-container">
+                    <label htmlFor="otherDescription">Description</label>
+                    <input
+                      type="text"
+                      id="otherDescription"
+                      value={otherDescription}
+                      onChange={(e) => setOtherDescription(e.target.value)}
+                      placeholder="Enter description for Other"
+                      required
+                    />
+                  </div>
+                )}
                 <div className="category-container">
                   <label>Category</label>
                   <input type="text" value={selectedExpenseCategory} readOnly />
@@ -171,12 +174,6 @@ const Popup = ({ handleClose, show, addData }) => {
                   </div>
                 ))}
               </div>
-              <div className="upload-container">
-                <label htmlFor="expenseFile">Upload File:</label>
-                <input type="file" id="expenseFile" onChange={handleFileChange} />
-                <label htmlFor="expenseNote">Path:</label>
-                <input type="text" id="expenseNote" value={filePath} onChange={(e) => setFilePath(e.target.value)} />
-              </div>
               <div className="save-container">
                 <button id="saveExpenseBtn" onClick={handleSave}>Save Expense</button>
                 <button onClick={handleClose}>Close</button>
@@ -190,7 +187,7 @@ const Popup = ({ handleClose, show, addData }) => {
                   <label htmlFor="incomeDate">Date</label>
                   <Flatpickr
                     options={{ dateFormat: 'Y-m-d' }}
-                    className="flatpickr"
+                    className="flatpickr small-date"
                     value={date}
                     onChange={([date]) => setDate(date)}
                     required
@@ -198,8 +195,31 @@ const Popup = ({ handleClose, show, addData }) => {
                 </div>
                 <div className="amount-container">
                   <label htmlFor="incomeAmount">Amount</label>
-                  <input type="number" id="incomeAmount" name="incomeAmount" value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <select
+                      value={currency}
+                      onChange={(e) => setCurrency(e.target.value)}
+                      style={{ marginRight: '8px' }}
+                    >
+                      <option value="INR">INR</option>
+                      <option value="USD">USD</option>
+                    </select>
+                    <input type="number" id="incomeAmount" name="incomeAmount" value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                  </div>
                 </div>
+                {selectedIncomeCategory === 'Other' && (
+                  <div className="other-description-container">
+                    <label htmlFor="otherDescription">Description</label>
+                    <input
+                      type="text"
+                      id="otherDescription"
+                      value={otherDescription}
+                      onChange={(e) => setOtherDescription(e.target.value)}
+                      placeholder="Enter description for Other"
+                      required
+                    />
+                  </div>
+                )}
                 <div className="category-container">
                   <label>Category</label>
                   <input type="text" value={selectedIncomeCategory} readOnly />
@@ -217,12 +237,6 @@ const Popup = ({ handleClose, show, addData }) => {
                   </div>
                 ))}
               </div>
-              <div className="upload-container">
-                <label htmlFor="incomeFile">Upload File:</label>
-                <input type="file" id="incomeFile" onChange={handleFileChange} />
-                <label htmlFor="incomeNote">Path:</label>
-                <input type="text" id="incomeNote" value={filePath} onChange={(e) => setFilePath(e.target.value)} />
-              </div>
               <div className="save-container">
                 <button id="saveIncomeBtn" onClick={handleSave}>Save Income</button>
                 <button onClick={handleClose}>Close</button>
@@ -236,6 +250,3 @@ const Popup = ({ handleClose, show, addData }) => {
 };
 
 export default Popup;
-
-
-

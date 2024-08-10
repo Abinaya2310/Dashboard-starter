@@ -1,101 +1,84 @@
-.MuiTableRow-root > * {
-  padding: 10px;
+:root {
+  --primary-color: #3f51b5;
+  --secondary-color: #1e88e5;
+  --background-color: #f9f9f9;
+  --text-color: #333;
+  --header-background-color: #283593;
+  --header-text-color: #fff;
+  --row-hover-color: #e3f2fd;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --border-radius: 12px;
 }
 
-.MuiTableRow-root.MuiTableRow-head > * {
-  font-weight: bold !important;
-  background-color: #f5f5f5;
-  color: #333;
-}
-
-.Table td,
-th {
-  border: none !important;
-  padding: 15px;
-  text-align: left;
-  vertical-align: middle;
-}
-
-.Table {
-  border-radius: 0.7rem !important;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.TableContainer {
   margin: 20px;
 }
 
-.Table th {
-  background-color:skyblue;
-  color: #fff;
+.Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-.Table tr {
-  border-bottom: 1px solid #ddd;
-  transition: background-color 0.3s ease;
+.Header h3 {
+  margin: 0;
 }
 
-.Table tr:hover {
-  background-color: #f1f1f1;
+.Header Button {
+  margin-left: auto;
 }
 
-.Table td .status {
-  padding: 8px;
-  border-radius: 9px;
-  display: inline-block;
-  min-width: 80px;
-  text-align: center;
-}
-.scrollable-container {
-  max-height: 500px; /* Adjust the height as needed */
-  overflow-y: auto; /* Enables vertical scrolling */
+.Table {
+  border-radius: var(--border-radius) !important;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--box-shadow);
+  margin: 20px 0;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-.Details {
-  color: #00b5ff !important;
-  cursor: pointer;
-  transition: color 0.3s ease;
+.Table th,
+.Table td {
+  padding: 16px;
+  text-align: left;
+  vertical-align: middle;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.Details:hover {
-  color: #008ac1 !important;
+.clicked-cell {
+  background-color: var(--secondary-color) !important;
+  color: #fff !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.MuiTableRow-root.MuiTableRow-head > * {
+  font-weight: 700 !important;
+  background-color: var(--header-background-color);
+  color: var(--header-text-color);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.Table tr:hover td {
+  background-color: var(--row-hover-color);
+  color: var(--primary-color);
+}
+
+.Table tr:last-child td {
+  border-bottom: none;
 }
 
 .ButtonGroup button {
   margin-right: 8px;
   transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  border: none;
 }
 
-.ButtonGroup button:hover {
-  background-color: #6200ea;
+.ButtonGroup .view-button {
+  background-color: var(--primary-color);
   color: #fff;
 }
 
-@media screen and (max-width: 1200px) {
-  .Table {
-    width: 100%;
-    margin-top: 2rem;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .Table {
-    position: relative;
-    display: block;
-    width: 100%;
-  }
-
-  .Table th, .Table td {
-    display: block;
-    text-align: right;
-  }
-
-  .Table th::after, .Table td::after {
-    content: ":";
-    display: inline-block;
-    margin-left: 5px;
-  }
-
-  .Table td {
-    text-align: left;
-  }
-}
