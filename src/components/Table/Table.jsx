@@ -10,31 +10,48 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import axios from 'axios';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Popup from '../Popup/Popup';
 import './Table.css';
 
-function createData(id, date, category, expense, income, amount) {
-  return { id, date, category, expense, income, amount };
-}
-
-const initialRows = [
-  createData(18908424, '2 March 2022', 'Food', 'Lasania Chicken Fri', '', '₹500'),
-  createData(18908425, '2 March 2022', 'Shopping', 'Big Baza Bang', '', '₹1500'),
-  createData(18908426, '2 March 2022', 'Health', 'Mouth Freshener', '', '₹300'),
-  createData(18908427, '2 March 2022', 'Food', 'Cupcake', '', '₹200'),
-  createData(18908428, '3 March 2022', 'Food', 'Pizza', '', '₹1000'),
-  createData(18908429, '4 March 2022', 'Food', 'Burger', '', '₹400'),
-  createData(18908430, '5 March 2022', 'Food', 'Pasta', '', '₹600'),
-  createData(18908431, '6 March 2022', 'Food', 'Ice Cream', '', '₹250'),
-];
-
 export default function BasicTable() {
-  const [data, setData] = useState(initialRows);
+  const [data, setData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [editRow, setEditRow] = useState(null); // State to handle editing
   const [viewRow, setViewRow] = useState(null); // State to handle viewing
+
+  useEffect(() => {
+    fetchEntries();
+  }, []);
+
+  const fetchEntries = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/entries');
+      setData(response.data);
+    } catch (error) {
+      console.error('Error fetching data', error);
+    }
+  };
+
+  const addEntry = async (newData) => {
+    try {
+      const response = await axios.post('http://localhost:3000/api/entries', newData);
+      setData((prevData) => [...prevData, response.data]);
+    } catch (error) {
+      console.error('Error adding data', error);
+    }
+  };
+
+  const deleteEntry = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/entries/${id}`);
+      setData((prevData) => prevData.filter((row) => row.id !== id));
+    } catch (error) {
+      console.error('Error deleting data', error);
+    }
+  };
 
   const handleOpenPopup = () => {
     setShowPopup(true);
@@ -43,23 +60,6 @@ export default function BasicTable() {
   const handleClosePopup = () => {
     setShowPopup(false);
     setEditRow(null); // Reset editRow when closing the popup
-  };
-
-  const addData = (newData) => {
-    if (editRow) {
-      // Editing existing row
-      setData((prevData) =>
-        prevData.map((row) => (row.id === editRow.id ? newData : row))
-      );
-    } else {
-      // Adding new row
-      setData((prevData) => [...prevData, newData]);
-    }
-    setShowPopup(false);
-  };
-
-  const handleDelete = (id) => {
-    setData((prevData) => prevData.filter((row) => row.id !== id));
   };
 
   const handleEdit = (row) => {
@@ -141,7 +141,7 @@ export default function BasicTable() {
                         variant="contained"
                         color="secondary"
                         size="small"
-                        onClick={() => handleDelete(row.id)}
+                        onClick={() => deleteEntry(row.id)}
                       >
                         Delete
                       </Button>
@@ -158,7 +158,7 @@ export default function BasicTable() {
         <Popup
           show={showPopup}
           handleClose={handleClosePopup}
-          addData={addData}
+          addData={addEntry}
           editRow={editRow} // Pass the row to edit if applicable
         />
       )}
@@ -197,6 +197,7 @@ export default function BasicTable() {
     </div>
   );
 }
+
 
 
 

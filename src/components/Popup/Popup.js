@@ -38,24 +38,41 @@ const Popup = ({ handleClose, show, addData }) => {
     setFilePath(e.target.value);
   };
 
+
   const handleSave = () => {
-    const category = activeTab === 'income' ? selectedIncomeCategory : selectedExpenseCategory;
-    const description = category === 'Other' ? otherDescription : '';
-
-    const newData = {
-      id: Date.now(),
-      date: date.toLocaleDateString(),
-      category,
-      description, // Store the description for "Other" category
-      expense: activeTab === 'expense' && category !== 'Other' ? `${currency} ${amount}` : description,
-      income: activeTab === 'income' && category !== 'Other' ? `${currency} ${amount}` : description,
-      amount: parseFloat(amount),
-    };
-
-    addData(newData); // Add the new data to the table
-    handleClose();    // Close the popup
+    try {
+      const category = activeTab === 'income' ? selectedIncomeCategory : selectedExpenseCategory;
+      const description = category === 'Other' ? otherDescription : '';
+  
+      // Validate required fields
+      if (!category) {
+        throw new Error('Category is required');
+      }
+      if (!amount || isNaN(amount)) {
+        throw new Error('A valid amount is required');
+      }
+      if (category === 'Other' && !description) {
+        throw new Error('Description is required when "Other" is selected as a category');
+      }
+  
+      const newData = {
+        id: Date.now(),
+        date: date.toLocaleDateString(),
+        category,
+        description, // Store the description for "Other" category
+        expense: activeTab === 'expense' && category !== 'Other' ? `${currency} ${amount}` : description,
+        income: activeTab === 'income' && category !== 'Other' ? `${currency} ${amount}` : description,
+        amount: parseFloat(amount),
+      };
+  
+      addData(newData); // Add the new data to the table
+      handleClose();    // Close the popup
+  
+    } catch (error) {
+      console.error('Error in handleSave:', error.message);
+    }
   };
-
+  
   const categories = {
     expense: [
       { name: 'Food', emoji: '🍽️' },

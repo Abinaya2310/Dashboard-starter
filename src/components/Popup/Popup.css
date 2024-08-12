@@ -173,7 +173,7 @@ body {
   cursor: pointer;
   transition: background 0.3s;
   font-size: 14px;
-  font-style: italic;
+
 }
 
 .file-label:hover {
@@ -193,7 +193,7 @@ body {
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
   font-size: 14px;
-  font-style: italic;
+
 }
 
 #saveExpenseBtn,
@@ -220,7 +220,7 @@ body {
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
   font-size: 14px;
-  font-style: italic;
+ 
 }
 
 #closeExpenseBtn,
@@ -237,7 +237,7 @@ body {
 /* Table CSS */
 .MuiTableRow-root > * {
   padding: 10px;
-  font-style: italic;
+  
 }
 
 .MuiTableRow-root.MuiTableRow-head > * {
@@ -245,7 +245,7 @@ body {
   background-color: #bbdefb;
   color: #333;
   font-size: 14px;
-  font-style: italic;
+ 
 }
 
 .Table td,
@@ -255,7 +255,7 @@ th {
   text-align: left;
   vertical-align: middle;
   font-size: 14px;
-  font-style: italic;
+
 }
 
 .Table {
@@ -286,7 +286,7 @@ th {
   display: inline-block;
   min-width: 80px;
   text-align: center;
-  font-style: italic;
+
 }
 
 .scrollable-container {
@@ -299,7 +299,7 @@ th {
   cursor: pointer;
   transition: color 0.3s ease;
   font-size: 14px;
-  font-style: italic;
+ 
 }
 
 .Details:hover {
@@ -310,7 +310,7 @@ th {
   margin-right: 8px;
   transition: background-color 0.3s ease, color 0.3s ease;
   font-size: 14px;
-  font-style: italic;
+ 
 }
 
 .ButtonGroup button:hover {
@@ -337,7 +337,7 @@ th {
     display: block;
     text-align: right;
     font-size: 14px;
-    font-style: italic;
+
   }
 
   .Table th::after,
