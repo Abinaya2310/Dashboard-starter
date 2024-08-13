@@ -1,10 +1,10 @@
 :root {
   --primary-color: #3f51b5;
-  --secondary-color: #1e88e5;
+  --secondary-color:plum;
   --background-color: #f9f9f9;
   --text-color: #333;
-  --header-background-color: #283593;
-  --header-text-color: #fff;
+  --header-background-color: plum;
+  --header-text-color: black;
   --row-hover-color: #e3f2fd;
   --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --border-radius: 12px;
@@ -80,5 +80,17 @@
 .ButtonGroup .view-button {
   background-color: var(--primary-color);
   color: #fff;
+}
+
+/* CSS for the selected row with hover effect */
+.selected-row {
+  background-color: var(--secondary-color) !important;
+  color: plum;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.selected-row:hover {
+  background-color: plum !important;
+  color: #fff !important;
 }
 

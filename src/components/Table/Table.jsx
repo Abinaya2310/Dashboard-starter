@@ -1,8 +1,12 @@
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -21,6 +25,9 @@ export default function BasicTable() {
   const [showPopup, setShowPopup] = useState(false);
   const [editRow, setEditRow] = useState(null); // State to handle editing
   const [viewRow, setViewRow] = useState(null); // State to handle viewing
+  const [confirmDelete, setConfirmDelete] = useState(false); // State to control delete confirmation dialog
+  const [deleteId, setDeleteId] = useState(null); // State to store the ID of the row to be deleted
+  const [selectedRowId, setSelectedRowId] = useState(null); // State to track the selected row
 
   useEffect(() => {
     fetchEntries();
@@ -29,9 +36,13 @@ export default function BasicTable() {
   const fetchEntries = async () => {
     try {
       const response = await axios.get('http://localhost:3000/api/entries');
-      setData(response.data);
+      if (response.status === 200) {
+        setData(response.data);
+      } else {
+        console.error('Failed to fetch data:', response.statusText);
+      }
     } catch (error) {
-      console.error('Error fetching data', error);
+      console.error('Error fetching data', error.message);
     }
   };
 
@@ -75,6 +86,28 @@ export default function BasicTable() {
     setViewRow(null);
   };
 
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setConfirmDelete(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteId) {
+      await deleteEntry(deleteId);
+    }
+    setConfirmDelete(false);
+    setDeleteId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setConfirmDelete(false);
+    setDeleteId(null);
+  };
+
+  const handleRowClick = (id) => {
+    setSelectedRowId(id);
+  };
+
   return (
     <div className="TableContainer">
       <div className="Header">
@@ -109,6 +142,8 @@ export default function BasicTable() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     layoutId={row.id.toString()}
+                    className={selectedRowId === row.id ? 'selected-row' : ''}
+                    onClick={() => handleRowClick(row.id)}
                   >
                     <TableCell component="th" scope="row">
                       {row.id}
@@ -119,32 +154,29 @@ export default function BasicTable() {
                     <TableCell align="left">{row.income}</TableCell>
                     <TableCell align="left">{row.amount}</TableCell>
                     <TableCell align="left">
-                      <Button
-                        variant="contained"
+                      <IconButton
                         color="info"
                         size="small"
                         style={{ marginRight: 8 }}
                         onClick={() => handleView(row)}
                       >
-                        View
-                      </Button>
-                      <Button
-                        variant="contained"
+                        <VisibilityIcon />
+                      </IconButton>
+                      <IconButton
                         color="primary"
                         size="small"
                         style={{ marginRight: 8 }}
                         onClick={() => handleEdit(row)}
                       >
-                        Edit
-                      </Button>
-                      <Button
-                        variant="contained"
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
                         color="secondary"
                         size="small"
-                        onClick={() => deleteEntry(row.id)}
+                        onClick={() => handleDeleteClick(row.id)}
                       >
-                        Delete
-                      </Button>
+                        <DeleteIcon />
+                      </IconButton>
                     </TableCell>
                   </motion.tr>
                 ))}
@@ -194,16 +226,25 @@ export default function BasicTable() {
           </DialogActions>
         </Dialog>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={confirmDelete}
+        onClose={handleCancelDelete}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <p>Are you sure you want to delete this entry?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
