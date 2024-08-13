@@ -1,9 +1,9 @@
 :root {
   --primary-color: #3f51b5;
-  --secondary-color:plum;
+  --secondary-color: white;
   --background-color: #f9f9f9;
   --text-color: #333;
-  --header-background-color: plum;
+  --header-background-color: #3f51b5;
   --header-text-color: black;
   --row-hover-color: #e3f2fd;
   --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -59,6 +59,9 @@
   color: var(--header-text-color);
   border-bottom: 2px solid var(--primary-color);
 }
+.MuiTableCell-root {
+  padding: 8px; /* Adjust the padding as needed */
+}
 
 .Table tr:hover td {
   background-color: var(--row-hover-color);
@@ -85,12 +88,11 @@
 /* CSS for the selected row with hover effect */
 .selected-row {
   background-color: var(--secondary-color) !important;
-  color: plum;
+  color: cornsilk;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .selected-row:hover {
-  background-color: plum !important;
+  background-color: slategray !important;
   color: #fff !important;
 }
-
