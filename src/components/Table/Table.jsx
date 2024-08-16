@@ -1,6 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -8,6 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
+import Snackbar from '@mui/material/Snackbar';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -16,18 +18,21 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import axios from 'axios';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Popup from '../Popup/Popup';
 import './Table.css';
 
 export default function BasicTable() {
   const [data, setData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [editRow, setEditRow] = useState(null); 
-  const [viewRow, setViewRow] = useState(null); 
-  const [confirmDelete, setConfirmDelete] = useState(false); 
-  const [deleteId, setDeleteId] = useState(null); 
-  const [selectedRowId, setSelectedRowId] = useState(null); 
+  const [editRow, setEditRow] = useState(null);
+  const [viewRow, setViewRow] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [selectedRowId, setSelectedRowId] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const newRowRef = useRef(null); // Ref for the newly added row
 
   useEffect(() => {
     fetchEntries();
@@ -37,7 +42,6 @@ export default function BasicTable() {
     try {
       const response = await axios.get('http://localhost:3000/api/entries');
       if (response.status === 200) {
-        // Sort the data by date and time in descending order (newest first)
         const sortedData = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
         setData(sortedData);
       } else {
@@ -50,13 +54,34 @@ export default function BasicTable() {
 
   const addEntry = async (newData) => {
     try {
-      // Get the current date and time in IST
       const currentISTDateTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
       const newDataWithTime = { ...newData, date: currentISTDateTime };
       const response = await axios.post('http://localhost:3000/api/entries', newDataWithTime);
       setData((prevData) => [response.data, ...prevData]);
+      setSelectedRowId(response.data.id); // Set the new entry as selected
+
+      // Scroll to the newly added row
+      setTimeout(() => {
+        if (newRowRef.current) {
+          newRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100); // Delay to ensure the row is added before scrolling
+
+      setSuccessMessage('Entry added successfully!');
     } catch (error) {
       console.error('Error adding data', error);
+    }
+  };
+
+  const updateEntry = async (updatedData) => {
+    try {
+      const response = await axios.put(`http://localhost:3000/api/entries/${updatedData.id}`, updatedData);
+      if (response.status === 200) {
+        setData((prevData) => prevData.map((row) => (row.id === updatedData.id ? updatedData : row)));
+        setSuccessMessage('Entry updated successfully!');
+      }
+    } catch (error) {
+      console.error('Error updating data', error);
     }
   };
 
@@ -75,7 +100,7 @@ export default function BasicTable() {
 
   const handleClosePopup = () => {
     setShowPopup(false);
-    setEditRow(null); 
+    setEditRow(null);
   };
 
   const handleEdit = (row) => {
@@ -113,6 +138,10 @@ export default function BasicTable() {
     setSelectedRowId(id);
   };
 
+  const handleCloseSuccessMessage = () => {
+    setSuccessMessage('');
+  };
+
   return (
     <div className="TableContainer">
       <div className="Header">
@@ -132,7 +161,7 @@ export default function BasicTable() {
                 <TableRow>
                   <TableCell>ID</TableCell>
                   <TableCell align="left">DATE</TableCell>
-                  <TableCell align="left">TIME</TableCell> {/* Added TIME header */}
+                  <TableCell align="left">TIME</TableCell>
                   <TableCell align="left">CATEGORY</TableCell>
                   <TableCell align="left">EXPENSE</TableCell>
                   <TableCell align="left">INCOME</TableCell>
@@ -148,6 +177,7 @@ export default function BasicTable() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     layoutId={row.id.toString()}
+                    ref={selectedRowId === row.id ? newRowRef : null} // Assign ref to the new row
                     className={selectedRowId === row.id ? 'selected-row' : ''}
                     onClick={() => handleRowClick(row.id)}
                   >
@@ -155,17 +185,17 @@ export default function BasicTable() {
                       {row.id}
                     </TableCell>
                     <TableCell align="left">
-                      {row.date ? row.date.split(', ')[0] : 'N/A'} {/* Safely check if date exists */}
+                      {row.date ? row.date.split(', ')[0] : 'N/A'}
                     </TableCell>
                     <TableCell align="left">
-                      {row.date ? (row.date.split(', ')[1] ? row.date.split(', ')[1] : 'N/A') : 'N/A'} {/* Safely check if time exists */}
+                      {row.date ? (row.date.split(', ')[1] ? row.date.split(', ')[1] : 'N/A') : 'N/A'}
                     </TableCell>
                     <TableCell align="left">{row.category}</TableCell>
                     <TableCell align="left">
-                      {row.expense ? row.expense : '-'} {/* Show expense if available, otherwise '-' */}
+                      {row.expense ? row.expense : '-'}
                     </TableCell>
                     <TableCell align="left">
-                      {row.income ? row.income : '-'} {/* Show income if available, otherwise '-' */}
+                      {row.income ? row.income : '-'}
                     </TableCell>
                     <TableCell align="left">{row.amount}</TableCell>
                     <TableCell align="left">
@@ -205,12 +235,11 @@ export default function BasicTable() {
         <Popup
           show={showPopup}
           handleClose={handleClosePopup}
-          addData={addEntry}
+          addData={editRow ? updateEntry : addEntry}  // Use updateEntry if editing
           editRow={editRow}
         />
       )}
 
-      {/* View Modal */}
       {viewRow && (
         <Dialog open={Boolean(viewRow)} onClose={handleCloseView}>
           <DialogTitle>View Entry</DialogTitle>
@@ -219,9 +248,10 @@ export default function BasicTable() {
               <strong>ID:</strong> {viewRow.id}
             </p>
             <p>
-              <strong>Date:</strong> {viewRow.date ? viewRow.date.split(', ')[0] : 'N/A'}</p> {/* Safely check if date exists */}
+              <strong>Date:</strong> {viewRow.date ? viewRow.date.split(', ')[0] : 'N/A'}</p>
             <p>
-              <strong>Time:</strong> {viewRow.date ? (viewRow.date.split(', ')[1] ? viewRow.date.split(', ')[1] : 'N/A') : 'N/A'}</p> {/* Safely check if time exists */}
+              <strong>Time:</strong> {viewRow.date ? (viewRow.date.split(', ')[1] ? viewRow.date.split(', ')[1] : 'N/A') : 'N/A'}
+            </p>
             <p>
               <strong>Category:</strong> {viewRow.category}
             </p>
@@ -243,7 +273,6 @@ export default function BasicTable() {
         </Dialog>
       )}
 
-      {/* Delete Confirmation Dialog */}
       <Dialog
         open={confirmDelete}
         onClose={handleCancelDelete}
@@ -261,6 +290,13 @@ export default function BasicTable() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={Boolean(successMessage)} autoHideDuration={3000} onClose={handleCloseSuccessMessage}>
+        <Alert onClose={handleCloseSuccessMessage} severity="success" sx={{ width: '100%' }}>
+          {successMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
+

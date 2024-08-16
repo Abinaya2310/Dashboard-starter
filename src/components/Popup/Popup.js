@@ -1,9 +1,9 @@
 import 'flatpickr/dist/flatpickr.min.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Flatpickr from 'react-flatpickr';
 import './Popup.css'; // Ensure you have the correct styles
 
-const Popup = ({ handleClose, show, addData }) => {
+const Popup = ({ handleClose, show, addData, editRow }) => {
   const [activeTab, setActiveTab] = useState('expense');
   const [selectedExpenseCategory, setSelectedExpenseCategory] = useState('');
   const [selectedIncomeCategory, setSelectedIncomeCategory] = useState('');
@@ -16,6 +16,25 @@ const Popup = ({ handleClose, show, addData }) => {
   const [selectedEmoji, setSelectedEmoji] = useState('');
 
   const showHideClassName = show ? 'modal display-block' : 'modal display-none';
+
+  useEffect(() => {
+    if (editRow) {
+      setActiveTab(editRow.expense ? 'expense' : 'income');
+      setDate(new Date(editRow.date));
+      setAmount(editRow.amount);
+      setCurrency(editRow.expense?.split(' ')[0] || editRow.income?.split(' ')[0] || 'INR');
+      
+      if (editRow.expense) {
+        setSelectedExpenseCategory(editRow.category);
+      } else {
+        setSelectedIncomeCategory(editRow.category);
+      }
+      
+      if (editRow.category === 'Other') {
+        setOtherDescription(editRow.description || '');
+      }
+    }
+  }, [editRow]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -38,12 +57,11 @@ const Popup = ({ handleClose, show, addData }) => {
     setFilePath(e.target.value);
   };
 
-
   const handleSave = () => {
     try {
       const category = activeTab === 'income' ? selectedIncomeCategory : selectedExpenseCategory;
       const description = category === 'Other' ? otherDescription : '';
-  
+
       // Validate required fields
       if (!category) {
         throw new Error('Category is required');
@@ -54,9 +72,9 @@ const Popup = ({ handleClose, show, addData }) => {
       if (category === 'Other' && !description) {
         throw new Error('Description is required when "Other" is selected as a category');
       }
-  
-      const newData = {
-        id: Date.now(),
+
+      const updatedData = {
+        id: editRow ? editRow.id : Date.now(), // Keep the same ID if editing
         date: date.toLocaleDateString(),
         category,
         description, // Store the description for "Other" category
@@ -64,10 +82,10 @@ const Popup = ({ handleClose, show, addData }) => {
         income: activeTab === 'income' && category !== 'Other' ? `${currency} ${amount}` : description,
         amount: parseFloat(amount),
       };
-  
-      addData(newData); // Add the new data to the table
+
+      addData(updatedData); // Pass the updated data back to the parent component
       handleClose();    // Close the popup
-  
+
     } catch (error) {
       console.error('Error in handleSave:', error.message);
     }
@@ -267,3 +285,6 @@ const Popup = ({ handleClose, show, addData }) => {
 };
 
 export default Popup;
+
+
+

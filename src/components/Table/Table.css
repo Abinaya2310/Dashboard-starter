@@ -8,6 +8,25 @@
   --row-hover-color: #e3f2fd;
   --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --border-radius: 12px;
+  --dark-grey-color: #2c2c2c; /* New dark grey color for the table in dark mode */
+  --dark-text-color: #e0e0e0;
+}
+
+body.dark-theme .Table {
+  background-color: var(--dark-grey-color); /* Use the new dark grey color */
+  color: var(--dark-text-color);
+  box-shadow: var(--dark-box-shadow);
+}
+
+body.dark-theme .Table th,
+body.dark-theme .Table td {
+  background-color: var(--dark-grey-color); /* Use the new dark grey color */
+  color: var(--dark-text-color);
+}
+
+body.dark-theme .Table tr:hover td {
+  background-color: var(--dark-row-hover-color);
+  color: var(--dark-primary-color);
 }
 
 .TableContainer {
@@ -96,3 +115,4 @@
   background-color: slategray !important;
   color: #fff !important;
 }
+

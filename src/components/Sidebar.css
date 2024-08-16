@@ -5,6 +5,21 @@
     padding-top: 4rem;
     transition: all 300ms ease;
   }
+
+  body.dark-theme .Sidebar {
+    background-color: var(--dark-header-background-color);
+    color: var(--dark-header-text-color);
+    box-shadow: var(--dark-box-shadow);
+  }
+  
+  body.dark-theme .Sidebar .menu-item:hover {
+    background-color: var(--dark-row-hover-color);
+    color: var(--dark-primary-color);
+  }
+  
+
+
+
   /* logo */
   .bars{
     display: none;
