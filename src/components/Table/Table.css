@@ -8,25 +8,23 @@
   --row-hover-color: #e3f2fd;
   --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --border-radius: 12px;
-  --dark-grey-color: #2c2c2c; /* New dark grey color for the table in dark mode */
+  --dark-grey-color: #2c2c2c;
   --dark-text-color: #e0e0e0;
 }
 
 body.dark-theme .Table {
-  background-color: var(--dark-grey-color); /* Use the new dark grey color */
+  background-color: var(--dark-grey-color);
   color: var(--dark-text-color);
-  box-shadow: var(--dark-box-shadow);
 }
 
 body.dark-theme .Table th,
 body.dark-theme .Table td {
-  background-color: var(--dark-grey-color); /* Use the new dark grey color */
+  background-color: var(--dark-grey-color);
   color: var(--dark-text-color);
 }
 
 body.dark-theme .Table tr:hover td {
-  background-color: var(--dark-row-hover-color);
-  color: var(--dark-primary-color);
+  background-color: var(--row-hover-color);
 }
 
 .TableContainer {
@@ -48,14 +46,21 @@ body.dark-theme .Table tr:hover td {
   margin-left: auto;
 }
 
-.Table {
-  border-radius: var(--border-radius) !important;
+.TableHeader {
+  width: 100%;
   overflow: hidden;
-  background: #fff;
-  box-shadow: var(--box-shadow);
-  margin: 20px 0;
-  border-collapse: separate;
-  border-spacing: 0;
+  background: var(--header-background-color);
+  color: var(--header-text-color);
+}
+
+.TableBodyContainer {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.Table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .Table th,
@@ -66,20 +71,67 @@ body.dark-theme .Table tr:hover td {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.clicked-cell {
-  background-color: var(--secondary-color) !important;
-  color: #fff !important;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.MuiTableRow-root.MuiTableRow-head > * {
-  font-weight: 700 !important;
+.Table th {
+  z-index: 3;
   background-color: var(--header-background-color);
   color: var(--header-text-color);
   border-bottom: 2px solid var(--primary-color);
 }
+
+/* Define fixed column widths */
+.Table th.id-column,
+.Table td.id-column {
+  width: 12%;
+}
+
+.Table th.date-column,
+.Table td.date-column {
+  width: 14%;
+}
+
+.Table th.time-column,
+.Table td.time-column {
+  width: 12%;
+}
+
+.Table th.category-column,
+.Table td.category-column {
+  width: 18%;
+}
+
+.Table th.expense-column,
+.Table td.expense-column {
+  width: 12%;
+}
+
+.Table th.income-column,
+.Table td.income-column {
+  width: 12%;
+}
+
+.Table th.amount-column,
+.Table td.amount-column {
+  width: 10%;
+}
+
+.Table th.actions-column,
+.Table td.actions-column {
+  width: 10%;
+}
+
+.actions-header {
+  min-width: 160px;
+}
+
+.actions-cell {
+  display: flex;
+  justify-content: space-around;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
 .MuiTableCell-root {
-  padding: 8px; /* Adjust the padding as needed */
+  padding: 8px;
 }
 
 .Table tr:hover td {
@@ -89,6 +141,12 @@ body.dark-theme .Table tr:hover td {
 
 .Table tr:last-child td {
   border-bottom: none;
+}
+
+.clicked-cell {
+  background-color: var(--secondary-color) !important;
+  color: #fff !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .ButtonGroup button {
@@ -116,3 +174,73 @@ body.dark-theme .Table tr:hover td {
   color: #fff !important;
 }
 
+/* Style for the sort dropdown */
+.SortBox {
+  margin-right: 10px;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #333;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.SortBox:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+}
+
+/* Dark mode styles */
+body.dark-theme .SortBox {
+  background-color: var(--dark-grey-color);
+  color: var(--dark-text-color);
+  border: 1px solid var(--dark-text-color);
+}
+
+body.dark-theme .SortBox:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+}
+/* Modern style for the Add New Entry button */
+/* Modern style for the Add New Entry button */
+.AddNewEntryButton {
+  margin-left: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  background-color: var(--primary-color);
+  color: white;
+  border: 1px solid white; /* White outline */
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.AddNewEntryButton:hover {
+  background-color: #2c387e; /* Slightly darker background on hover */
+}
+
+.AddNewEntryButton:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+  outline: none;
+}
+
+/* Dark mode styles */
+body.dark-theme .AddNewEntryButton {
+  background-color: var(--dark-grey-color);
+  color: var(--dark-text-color);
+  border: 1px solid var(--dark-text-color); /* Dark outline for dark mode */
+}
+
+body.dark-theme .AddNewEntryButton:hover {
+  background-color: #3a3a3a; /* Slightly darker background on hover in dark mode */
+}
+
+body.dark-theme .AddNewEntryButton:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+}
