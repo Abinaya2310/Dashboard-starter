@@ -1,12 +1,12 @@
 :root {
   /* Light Theme Colors */
   --primary-color: #3f51b5;
-  --secondary-color: skyblue;
-  --background-color: skyblue;
+  --secondary-color: white;
+  --background-color: skyblue; /* Set the background to sky blue */
   --text-color: #333;
   --header-background-color: skyblue;
   --header-text-color: black;
-  --row-hover-color: skyblue;
+  --row-hover-color: lightblue; /* Adjust row hover color to complement sky blue */
   --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --border-radius: 12px;
 
@@ -20,15 +20,15 @@
   --dark-row-hover-color: #3949ab;
   --dark-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
-  
+
 body.light-theme {
   --primary-color: #3f51b5;
-  --secondary-color: skyblue;
-  --background-color: skyblue;
+  --secondary-color: white;
+  --background-color: skyblue; /* Ensure sky blue background in light mode */
   --text-color: #333;
   --header-background-color: skyblue;
   --header-text-color: black;
-  --row-hover-color: skyblue;
+  --row-hover-color: lightblue;
   --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -45,7 +45,7 @@ body.dark-theme {
 
 .App {
   color: var(--text-color);
-  background: var(--background-color);
+  background: var(--background-color); /* Applies sky blue background in light mode */
   height: 100vh;
   display: flex;
   align-items: center;
@@ -61,7 +61,7 @@ body.dark-theme {
   background: var(--secondary-color);
   border-radius: 2rem;
   gap: 16px;
-  grid-template-columns: 11rem auto 20rem;
+  grid-template-columns: 20rem auto; /* Increased the width of the left-side table */
   overflow: hidden;
   box-shadow: var(--box-shadow);
 }
@@ -106,10 +106,9 @@ body.dark-theme {
   outline: none;
 }
 
-
 @media screen and (max-width: 1200px) {
   .AppGlass {
-    grid-template-columns: 10% 50% auto;
+    grid-template-columns: 35% 65%; /* Further increased the width of the left-side table for medium screens */
     overflow-y: scroll;
   } 
 }
@@ -119,3 +118,4 @@ body.dark-theme {
     grid-template-columns: 1fr;
   } 
 }
+

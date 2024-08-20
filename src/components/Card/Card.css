@@ -7,11 +7,13 @@
   padding: 1rem;
   position: relative;
   cursor: pointer;
+  width: 90%; /* Reduced width to make the rectangle shorter */
 }
 
 .CompactCard:hover {
   box-shadow: none !important;
 }
+
 /* radial bar */
 .radialBar {
   flex: 1 1;
@@ -20,18 +22,22 @@
   justify-content: flex-end;
   gap: 1rem;
 }
+
 .CircularProgressbar {
   width: 4rem !important;
   overflow: visible;
 }
+
 .CircularProgressbar-path {
   stroke: white !important;
   stroke-width: 12px !important;
   filter: drop-shadow(2px 4px 6px white);
 }
+
 .CircularProgressbar-trail {
   display: none;
 }
+
 .CircularProgressbar-text {
   fill: white !important;
 }
@@ -41,7 +47,7 @@
   font-weight: bold;
 }
 
-/* sideDetail*/
+/* sideDetail */
 .detail {
   flex: 1;
   display: flex;
@@ -54,6 +60,7 @@
   font-size: 22px;
   font-weight: bold;
 }
+
 .detail > span:nth-child(3) {
   font-size: 12px;
 }
@@ -61,7 +68,7 @@
 /* ExpandedCard */
 .ExpandedCard {
   position: absolute;
-  width: 60%;
+  width: 55%; /* Reduced width to make the rectangle shorter */
   height: 70vh;
   z-index: 9;
   left: 13rem;
@@ -72,19 +79,21 @@
   justify-content: space-around;
   padding: 1rem;
 }
+
 .ExpandedCard > span:nth-of-type(1) {
   color: white;
   font-size: 26px;
   font-weight: bold;
   text-shadow: 0px 0px 15px white;
 }
+
 .ExpandedCard > span:nth-of-type(2) {
   color: rgb(236, 236, 236);
   font-size: 15px;
 }
 
 .chartContainer {
-  width: 70%;
+  width: 65%; /* Reduced width of the chart container */
 }
 
 @media screen and (max-width: 1200px) {
@@ -100,6 +109,6 @@
     top: 8rem;
     height: 50%;
     left: 25px;
-    width: 80%;
+    width: 75%; /* Reduced width for smaller screens */
   }
 }
