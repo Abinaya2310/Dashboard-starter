@@ -33,6 +33,7 @@ export default function BasicTable() {
   const [deleteId, setDeleteId] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
   const [sortCriteria, setSortCriteria] = useState(''); // State for sorting criteria
 
   const newRowRef = useRef(null); // Ref for the newly added row
@@ -57,17 +58,16 @@ export default function BasicTable() {
   const addEntry = async (newData) => {
     try {
       const currentISTDateTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-      const newDataWithTime = { ...newData, date: currentISTDateTime };
+      const newDataWithTime = { ...newData, date: currentISTDateTime, currency: newData.currency || 'INR' };
       const response = await axios.post('http://localhost:3000/api/entries', newDataWithTime);
       setData((prevData) => [response.data, ...prevData]);
-      setSelectedRowId(response.data.id); // Set the new entry as selected
+      setSelectedRowId(response.data.id);
 
-      // Scroll to the newly added row
       setTimeout(() => {
         if (newRowRef.current) {
           newRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-      }, 100); // Delay to ensure the row is added before scrolling
+      }, 100);
 
       setSuccessMessage('Entry added successfully!');
     } catch (error) {
@@ -91,6 +91,7 @@ export default function BasicTable() {
     try {
       await axios.delete(`http://localhost:3000/api/entries/${id}`);
       setData((prevData) => prevData.filter((row) => row.id !== id));
+      setDeleteSuccessMessage('Entry deleted successfully!');
     } catch (error) {
       console.error('Error deleting data', error);
     }
@@ -145,28 +146,67 @@ export default function BasicTable() {
   };
 
   // Sort the data based on the selected criteria
-  const handleSortChange = (e) => {
+  const handleSortChange = async (e) => {
     const criteria = e.target.value;
     setSortCriteria(criteria);
 
-    let sortedData = [...data];
-    if (criteria === 'id') {
-      sortedData.sort((a, b) => a.id.localeCompare(b.id));
-    } else if (criteria === 'date') {
-      sortedData.sort((a, b) => new Date(a.date) - new Date(b.date));
-    } else if (criteria === 'time') {
-      sortedData.sort((a, b) => new Date('1970/01/01 ' + a.date.split(', ')[1]) - new Date('1970/01/01 ' + b.date.split(', ')[1]));
-    } else if (criteria === 'category') {
-      sortedData.sort((a, b) => a.category.localeCompare(b.category));
-    } else if (criteria === 'expense') {
-      sortedData.sort((a, b) => (a.expense || 0) - (b.expense || 0));
-    } else if (criteria === 'income') {
-      sortedData.sort((a, b) => (a.income || 0) - (b.income || 0));
-    } else if (criteria === 'amount') {
-      sortedData.sort((a, b) => a.amount - b.amount);
-    }
+    try {
+      // Fetch fresh data from the server
+      const response = await axios.get('http://localhost:3000/api/entries');
+      if (response.status === 200) {
+        let sortedData = [...response.data];
+        const now = new Date();
 
-    setData(sortedData);
+        if (criteria === 'today') {
+          sortedData = sortedData.filter((row) => {
+            const rowDate = new Date(row.date.split(', ')[0]);
+            return (
+              rowDate.getDate() === now.getDate() &&
+              rowDate.getMonth() === now.getMonth() &&
+              rowDate.getFullYear() === now.getFullYear()
+            );
+          });
+        } else if (criteria === 'yesterday') {
+          const yesterday = new Date(now);
+          yesterday.setDate(now.getDate() - 1);
+
+          sortedData = sortedData.filter((row) => {
+            const rowDate = new Date(row.date.split(', ')[0]);
+            return (
+              rowDate.getDate() === yesterday.getDate() &&
+              rowDate.getMonth() === yesterday.getMonth() &&
+              rowDate.getFullYear() === yesterday.getFullYear()
+            );
+          });
+        } else if (criteria === 'last7days') {
+          sortedData = sortedData.filter((row) => {
+            const rowDate = new Date(row.date.split(', ')[0]);
+            const diffTime = now - rowDate;
+            return diffTime <= 7 * 24 * 60 * 60 * 1000;
+          });
+        } else if (criteria === 'last1month') {
+          sortedData = sortedData.filter((row) => {
+            const rowDate = new Date(row.date.split(', ')[0]);
+            const diffTime = now - rowDate;
+            return diffTime <= 30 * 24 * 60 * 60 * 1000;
+          });
+        } else if (criteria === 'last1year') {
+          sortedData = sortedData.filter((row) => {
+            const rowDate = new Date(row.date.split(', ')[0]);
+            const diffTime = now - rowDate;
+            return diffTime <= 365 * 24 * 60 * 60 * 1000;
+          });
+        } else if (criteria === 'all') {
+          sortedData = [...response.data]; // Show all data if 'All' is selected
+        }
+
+        setData(sortedData); // Update state with sorted data
+      } else {
+        console.error('Failed to fetch data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching data', error.message);
+    }
   };
 
   return (
@@ -176,13 +216,12 @@ export default function BasicTable() {
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <select value={sortCriteria} onChange={handleSortChange} className="SortBox" style={{ marginRight: '10px' }}>
             <option value="">Sort By</option>
-            <option value="id">ID</option>
-            <option value="date">Date</option>
-            <option value="time">Time</option>
-            <option value="category">Category</option>
-            <option value="expense">Expense</option>
-            <option value="income">Income</option>
-            <option value="amount">Amount</option>
+            <option value="all">All</option> {/* Add All option */}
+            <option value="today">Today</option>
+            <option value="yesterday">Yesterday</option>
+            <option value="last7days">Last 7 Days</option>
+            <option value="last1month">Last 1 Month</option>
+            <option value="last1year">Last 1 Year</option>
           </select>
           <Button variant="contained" color="primary" onClick={handleOpenPopup} className="AddNewEntryButton">
             Add New Entry
@@ -236,7 +275,9 @@ export default function BasicTable() {
                   <TableCell align="left">
                     {row.income ? row.income : '-'}
                   </TableCell>
-                  <TableCell align="left">{row.amount}</TableCell>
+                  <TableCell align="left">
+                    {row.currency === 'USD' ? '$' : '₹'} {row.amount}
+                  </TableCell>
                   <TableCell align="left" className="actions-cell">
                     <IconButton
                       color="info"
@@ -286,10 +327,10 @@ export default function BasicTable() {
               <strong>ID:</strong> {viewRow.id}
             </p>
             <p>
-              <strong>Date:</strong> {viewRow.date ? viewRow.date.split(', ')[0] : 'N/A'}
+              <strong>Date:</strong> {viewRow?.date ? viewRow.date.split(', ')[0] : 'N/A'}
             </p>
             <p>
-              <strong>Time:</strong> {viewRow.date ? (viewRow.date.split(', ')[1] ? viewRow.date.split(', ')[1] : 'N/A') : 'N/A'}
+              <strong>Time:</strong> {viewRow?.date ? (viewRow.date.split(', ')[1] ? viewRow.date.split(', ')[1] : 'N/A') : 'N/A'}
             </p>
             <p>
               <strong>Category:</strong> {viewRow.category}
@@ -301,7 +342,7 @@ export default function BasicTable() {
               <strong>Income:</strong> {viewRow.income ? viewRow.income : '-'}
             </p>
             <p>
-              <strong>Amount:</strong> {viewRow.amount}
+              <strong>Amount:</strong> {viewRow.currency === 'USD' ? '$' : '₹'} {viewRow.amount}
             </p>
           </DialogContent>
           <DialogActions>
@@ -335,9 +376,12 @@ export default function BasicTable() {
           {successMessage}
         </Alert>
       </Snackbar>
+
+      <Snackbar open={Boolean(deleteSuccessMessage)} autoHideDuration={3000} onClose={() => setDeleteSuccessMessage('')}>
+        <Alert onClose={() => setDeleteSuccessMessage('')} severity="success" sx={{ width: '100%' }}>
+          {deleteSuccessMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
-
-
-

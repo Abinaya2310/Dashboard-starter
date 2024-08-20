@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import Footer from './components/Footer.jsx';
 import MainDash from './components/MainDash/MainDash.jsx';
-import RightSide from './components/RightSide/RightSide.jsx';
 import Sidebar from './components/Sidebar.jsx';
 
 function App() {
@@ -32,7 +31,7 @@ function App() {
       <div className="AppGlass">
         <Sidebar />
         <MainDash />
-        <RightSide />
+
       </div>
       <Footer />
     </div>

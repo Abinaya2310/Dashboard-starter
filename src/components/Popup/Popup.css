@@ -36,7 +36,7 @@ body.dark-theme {
   padding: 30px;
   border-radius: 12px;
   width: 70%;
-  max-width: 600px;
+  max-width: 700px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   position: relative;
   transform: translateY(-30px);
@@ -146,11 +146,11 @@ body.dark-theme .inputs .input-group label {
 
 .inputs .input-group input,
 .inputs .input-group .flatpickr {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 15px;
-  transition: border-color 0.3s;
+  padding: 15px; /* Increase padding for a larger input field */
+  font-size: 18px; /* Increase font size */
+  border-radius: 10px; /* Slightly more rounded corners */
+  border: 2px solid #ddd; /* Slightly thicker border */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for focus effects */
   width: 100%;
 }
 
@@ -163,9 +163,9 @@ body.dark-theme .inputs .input-group .flatpickr {
 
 .inputs .input-group input:focus,
 .inputs .input-group .flatpickr:focus {
-  border-color: #007bff;
+  border-color: #007bff; /* Highlight border on focus */
   outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Add a slight shadow on focus */
 }
 
 body.dark-theme .inputs .input-group input:focus,
@@ -255,20 +255,19 @@ body.dark-theme .file-label:hover {
   margin-top: 20px;
 }
 
-save-container button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s, color 0.3s;
-  font-size: 15px;
-  font-weight: 600;
-}
+
 
 #saveExpenseBtn,
 #saveIncomeBtn {
   background: #007bff;
   color: white;
+  padding: 15px ; /* Increase padding for larger buttons */
+  border: none;
+  border-radius: 10px; /* Slightly more rounded corners */
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+  font-size: 15px; /* Increase font size */
+  font-weight: 450; /* Make text bolder */
 }
 
 body.dark-theme #saveExpenseBtn,
@@ -280,6 +279,7 @@ body.dark-theme #saveIncomeBtn {
 #saveExpenseBtn:hover,
 #saveIncomeBtn:hover {
   background: #0056b3;
+  box-shadow: 0 0 10px rgba(0, 86, 179, 0.3); /* Add a slight shadow on hover */
 }
 
 body.dark-theme #saveExpenseBtn:hover,
@@ -294,20 +294,18 @@ body.dark-theme #saveIncomeBtn:hover {
   margin-top: 20px;
 }
 
-close-container button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s, color 0.3s;
-  font-size: 15px;
-  font-weight: 600;
-}
 
 #closeExpenseBtn,
 #closeIncomeBtn {
   background: #007bff;
   color: white;
+  padding: 15px 25px; /* Increase padding for larger buttons */
+  border: none;
+  border-radius: 20px; /* Slightly more rounded corners */
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+  font-size: 18px; /* Increase font size */
+  font-weight: 600; /* Make text bolder */
 }
 
 body.dark-theme #closeExpenseBtn,
@@ -319,6 +317,7 @@ body.dark-theme #closeIncomeBtn {
 #closeExpenseBtn:hover,
 #closeIncomeBtn:hover {
   background: #0056b3;
+  box-shadow: 0 0 10px rgba(0, 86, 179, 0.3); /* Add a slight shadow on hover */
 }
 
 body.dark-theme #closeExpenseBtn:hover,

@@ -106,6 +106,7 @@ body.dark-theme {
   outline: none;
 }
 
+
 @media screen and (max-width: 1200px) {
   .AppGlass {
     grid-template-columns: 10% 50% auto;
@@ -118,4 +119,3 @@ body.dark-theme {
     grid-template-columns: 1fr;
   } 
 }
-
