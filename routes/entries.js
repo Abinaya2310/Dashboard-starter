@@ -14,10 +14,11 @@ router.get('/', async (req, res) => {
 
 // POST a new entry
 router.post('/', async (req, res) => {
-  const { id, date, category, expense, income, amount } = req.body;
+  const { id, date, category, note, expense, income, amount } = req.body;
 
   try {
-    const newEntry = new Entry({ id, date, category, expense, income, amount });
+    const newEntry = new Entry({ id, date, category, note, expense, income, amount });
+    
     await newEntry.save();
     res.status(201).json(newEntry);
   } catch (err) {

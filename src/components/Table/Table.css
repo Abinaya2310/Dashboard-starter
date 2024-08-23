@@ -5,7 +5,7 @@
   --text-color: #333;
   --header-background-color: #3f51b5;
   --header-text-color: black;
-  --row-hover-color: #e3f2fd;
+  --row-hover-color: skyblue;
   --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --border-radius: 12px;
   --dark-grey-color: #2c2c2c;
@@ -17,17 +17,21 @@ body {
   font-size: var(--base-font-size); /* Apply base font size */
   color: var(--text-color);
 }
+.Table tr.clicked-row:hover td {
+  background-color: skyblue !important;
+  color: var(--text-color) !important;
+}
 
 body.dark-theme .Table {
   background-color: var(--dark-grey-color);
   color: var(--dark-text-color);
 }
-
 body.dark-theme .Table th,
 body.dark-theme .Table td {
   background-color: var(--dark-grey-color);
   color: var(--dark-text-color);
 }
+
 
 body.dark-theme .Table tr:hover td {
   background-color: var(--row-hover-color);
@@ -41,7 +45,7 @@ body.dark-theme .Table tr:hover td {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 
 .Header h3 {
@@ -59,6 +63,7 @@ body.dark-theme .Table tr:hover td {
   overflow: hidden;
   background: var(--header-background-color);
   color: var(--header-text-color);
+  display: grid;
 }
 
 .TableBodyContainer {
@@ -77,7 +82,7 @@ body.dark-theme .Table tr:hover td {
   text-align: left;
   vertical-align: middle;
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-size:2rem; /* Increase font size */
+  font-size: 2rem; /* Increase font size */
 }
 
 .Table th {
@@ -116,7 +121,7 @@ body.dark-theme .Table tr:hover td {
 
 .clicked-cell {
   background-color: var(--secondary-color) !important;
-  color: #fff !important;
+  color: skyblue !important;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -142,7 +147,7 @@ body.dark-theme .Table tr:hover td {
 }
 
 .selected-row:hover {
-  background-color: slategray !important;
+  background-color: skyblue;
   color: #fff !important;
 }
 
@@ -216,3 +221,5 @@ body.dark-theme .AddNewEntryButton:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
 }
+
+/* Add this to ensure the clicked row remains sky blue on hover */

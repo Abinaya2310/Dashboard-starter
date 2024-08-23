@@ -1,5 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import GetAppIcon from '@mui/icons-material/GetApp'; // Import the download icon
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Alert,
@@ -20,6 +21,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { jsPDF } from 'jspdf'; // Import jsPDF
 import React, { useEffect, useRef, useState } from 'react';
 import Popup from '../Popup/Popup';
 import './Table.css';
@@ -95,6 +97,47 @@ export default function BasicTable() {
     } catch (error) {
       console.error('Error deleting data', error);
     }
+  };
+
+  const handleDownload = (row) => {
+    const doc = new jsPDF();
+
+    const lineHeight = 10;
+    const startX = 10;
+    let currentY = 10;
+
+    doc.text(`ID:`, startX, currentY);
+    doc.text(`${row.id}`, startX + 50, currentY);
+
+    currentY += lineHeight;
+    doc.text(`Date:`, startX, currentY);
+    doc.text(`${row.date ? row.date.split(', ')[0] : 'N/A'}`, startX + 50, currentY);
+
+    currentY += lineHeight;
+    doc.text(`Time:`, startX, currentY);
+    doc.text(`${row.date ? (row.date.split(', ')[1] ? row.date.split(', ')[1] : 'N/A') : 'N/A'}`, startX + 50, currentY);
+
+    currentY += lineHeight;
+    doc.text(`Category:`, startX, currentY);
+    doc.text(`${row.category}`, startX + 50, currentY);
+
+    currentY += lineHeight;
+    doc.text(`Note:`, startX, currentY);
+    doc.text(`${row.note}`, startX + 50, currentY);
+
+    currentY += lineHeight;
+    doc.text(`Expense:`, startX, currentY);
+    doc.text(`${row.expense ? row.expense : '-'}`, startX + 50, currentY);
+
+    currentY += lineHeight;
+    doc.text(`Income:`, startX, currentY);
+    doc.text(`${row.income ? row.income : '-'}`, startX + 50, currentY);
+
+    currentY += lineHeight;
+    doc.text(`Amount:`, startX, currentY);
+    doc.text(`${row.currency === 'USD' ? '$' : '₹'} ${row.amount}`, startX + 50, currentY);
+
+    doc.save(`entry-${row.id}.pdf`);
   };
 
   const handleOpenPopup = () => {
@@ -229,21 +272,22 @@ export default function BasicTable() {
         </div>
       </div>
       <div className="TableHeader">
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell align="left">DATE</TableCell>
-              <TableCell align="left">TIME</TableCell>
-              <TableCell align="left">CATEGORY</TableCell>
-              <TableCell align="left">EXPENSE</TableCell>
-              <TableCell align="left">INCOME</TableCell>
-              <TableCell align="left">AMOUNT</TableCell>
-              <TableCell align="left" className="actions-header">ACTIONS</TableCell>
-            </TableRow>
-          </TableHead>
-        </Table>
-      </div>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>ID</TableCell>
+            <TableCell align="right" sx={{ width: '90px', padding: '8px', borderRight: '1px solid #ddd' }}>DATE</TableCell>
+            <TableCell align="right" sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
+            <TableCell align="right" sx={{ width: '150px', padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
+            <TableCell align="right" sx={{ width: '140px', padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
+            <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>EXPENSE</TableCell>
+            <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
+            <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>AMOUNT</TableCell>
+            <TableCell align="right" sx={{ width: '150px', padding: '8px', borderRight: 'none' }} className="actions-header">ACTIONS</TableCell>
+          </TableRow>
+        </TableHead>
+      </Table>
+    </div>
       <div className="TableBodyContainer">
         <TableContainer component={Paper}>
           <Table>
@@ -269,6 +313,7 @@ export default function BasicTable() {
                     {row.date ? (row.date.split(', ')[1] ? row.date.split(', ')[1] : 'N/A') : 'N/A'}
                   </TableCell>
                   <TableCell align="left">{row.category}</TableCell>
+                  <TableCell align="left">{row.note }</TableCell> {/* Display the note */}
                   <TableCell align="left">
                     {row.expense ? row.expense : '-'}
                   </TableCell>
@@ -294,6 +339,14 @@ export default function BasicTable() {
                       onClick={() => handleEdit(row)}
                     >
                       <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      color="secondary"
+                      size="small"
+                      style={{ marginRight: 8 }}
+                      onClick={() => handleDownload(row)} // Add the download handler
+                    >
+                      <GetAppIcon />
                     </IconButton>
                     <IconButton
                       color="secondary"
@@ -334,6 +387,9 @@ export default function BasicTable() {
             </p>
             <p>
               <strong>Category:</strong> {viewRow.category}
+            </p>
+            <p>
+              <strong>Note:</strong> {viewRow.note }
             </p>
             <p>
               <strong>Expense:</strong> {viewRow.expense ? viewRow.expense : '-'}

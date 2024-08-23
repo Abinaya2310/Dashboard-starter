@@ -144,32 +144,66 @@ body.dark-theme .inputs .input-group label {
   color: #ccc;
 }
 
+/* Modern design for date, category, and amount inputs */
 .inputs .input-group input,
-.inputs .input-group .flatpickr {
-  padding: 15px; /* Increase padding for a larger input field */
-  font-size: 18px; /* Increase font size */
-  border-radius: 10px; /* Slightly more rounded corners */
-  border: 2px solid #ddd; /* Slightly thicker border */
-  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for focus effects */
+.inputs .input-group .flatpickr,
+.inputs .input-group select {
+  padding: 12px; /* Adjusted padding for a modern look */
+  font-size: 16px; /* Adjusted font size for a clean appearance */
+  border-radius: 8px; /* Modern rounded corners */
+  border: 1px solid #ccc; /* Subtle border */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
+  background-color: #f9f9f9; /* Light background for a modern look */
 }
 
 body.dark-theme .inputs .input-group input,
-body.dark-theme .inputs .input-group .flatpickr {
+body.dark-theme .inputs .input-group .flatpickr,
+body.dark-theme .inputs .input-group select {
   background-color: #444;
   color: #fff;
   border-color: #555;
 }
 
 .inputs .input-group input:focus,
-.inputs .input-group .flatpickr:focus {
-  border-color: #007bff; /* Highlight border on focus */
+.inputs .input-group .flatpickr:focus,
+.inputs .input-group select:focus {
+  border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Add a slight shadow on focus */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
 
 body.dark-theme .inputs .input-group input:focus,
-body.dark-theme .inputs .input-group .flatpickr:focus {
+body.dark-theme .inputs .input-group .flatpickr:focus,
+body.dark-theme .inputs .input-group select:focus {
+  border-color: #82aaff;
+  box-shadow: 0 0 5px rgba(130, 170, 255, 0.3);
+}
+
+/* Even smaller note box */
+.note-container textarea {
+  padding: 8px; /* Further decrease padding */
+  font-size: 12px; /* Smaller font size */
+  border-radius: 6px; /* Less rounded corners */
+  border: 1px solid #ddd;
+  width: 100%;
+  height: 60px; /* Further decrease the height */
+  resize: none;
+}
+
+body.dark-theme .note-container textarea {
+  background-color: #444;
+  color: #fff;
+  border-color: #555;
+}
+
+.note-container textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+body.dark-theme .note-container textarea:focus {
   border-color: #82aaff;
   box-shadow: 0 0 5px rgba(130, 170, 255, 0.3);
 }
@@ -474,3 +508,4 @@ body.dark-theme .ButtonGroup button:hover {
     text-align: left;
   }
 }
+

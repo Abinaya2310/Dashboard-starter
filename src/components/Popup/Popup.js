@@ -7,13 +7,10 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
   const [activeTab, setActiveTab] = useState('expense');
   const [selectedExpenseCategory, setSelectedExpenseCategory] = useState('');
   const [selectedIncomeCategory, setSelectedIncomeCategory] = useState('');
-  const [otherDescription, setOtherDescription] = useState(''); // State for description if "Other" is selected
   const [date, setDate] = useState(new Date());
   const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState('INR'); // Currency selector state
-  const [filePath, setFilePath] = useState('');
-  const [file, setFile] = useState(null);
-  const [selectedEmoji, setSelectedEmoji] = useState('');
+  const [currency, setCurrency] = useState('INR');
+  const [note, setNote] = useState('-'); // State for the note
 
   const showHideClassName = show ? 'modal display-block' : 'modal display-none';
 
@@ -23,23 +20,17 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
       setDate(new Date(editRow.date));
       setAmount(editRow.amount);
       setCurrency(editRow.expense?.split(' ')[0] || editRow.income?.split(' ')[0] || 'INR');
-      
+      setNote(editRow.note); // Set note when editing
       if (editRow.expense) {
         setSelectedExpenseCategory(editRow.category);
       } else {
         setSelectedIncomeCategory(editRow.category);
-      }
-      
-      if (editRow.category === 'Other') {
-        setOtherDescription(editRow.description || '');
       }
     }
   }, [editRow]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    setSelectedEmoji(''); // Reset emoji when changing tab
-    setOtherDescription(''); // Reset other description when changing tab
   };
 
   const selectCategory = (category) => {
@@ -48,19 +39,11 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
     } else {
       setSelectedExpenseCategory(category.name);
     }
-    setSelectedEmoji(category.emoji);
-    setOtherDescription(''); // Clear description when selecting a category
-  };
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-    setFilePath(e.target.value);
   };
 
   const handleSave = () => {
     try {
       const category = activeTab === 'income' ? selectedIncomeCategory : selectedExpenseCategory;
-      const description = category === 'Other' ? otherDescription : '';
 
       // Validate required fields
       if (!category) {
@@ -69,28 +52,24 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
       if (!amount || isNaN(amount)) {
         throw new Error('A valid amount is required');
       }
-      if (category === 'Other' && !description) {
-        throw new Error('Description is required when "Other" is selected as a category');
-      }
 
       const updatedData = {
-        id: editRow ? editRow.id : Date.now(), // Keep the same ID if editing
+        id: editRow ? editRow.id : Date.now(),
         date: date.toLocaleDateString(),
         category,
-        description, // Store the description for "Other" category
-        expense: activeTab === 'expense' && category !== 'Other' ? `${currency} ${amount}` : description,
-        income: activeTab === 'income' && category !== 'Other' ? `${currency} ${amount}` : description,
+        expense: activeTab === 'expense' ? `${currency} ${amount}` : '',
+        income: activeTab === 'income' ? `${currency} ${amount}` : '',
         amount: parseFloat(amount),
+        note, // Add note to the data
       };
 
-      addData(updatedData); // Pass the updated data back to the parent component
-      handleClose();    // Close the popup
-
+      addData(updatedData);
+      handleClose();
     } catch (error) {
       console.error('Error in handleSave:', error.message);
     }
   };
-  
+
   const categories = {
     expense: [
       { name: 'Food', emoji: '🍽️' },
@@ -179,22 +158,19 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
                     <input type="number" id="expenseAmount" name="expenseAmount" value={amount} onChange={(e) => setAmount(e.target.value)} required />
                   </div>
                 </div>
-                {selectedExpenseCategory === 'Other' && (
-                  <div className="other-description-container">
-                    <label htmlFor="otherDescription">Description</label>
-                    <input
-                      type="text"
-                      id="otherDescription"
-                      value={otherDescription}
-                      onChange={(e) => setOtherDescription(e.target.value)}
-                      placeholder="Enter description for Other"
-                      required
-                    />
-                  </div>
-                )}
                 <div className="category-container">
                   <label>Category</label>
                   <input type="text" value={selectedExpenseCategory} readOnly />
+                </div>
+                <div className="note-container">
+                  <label htmlFor="note">Note</label>
+                  <textarea
+                    id="note"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Add a note"
+                    rows="3"
+                  />
                 </div>
               </div>
               <div className="icon-grid" id="expenseIconSelection">
@@ -242,22 +218,19 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
                     <input type="number" id="incomeAmount" name="incomeAmount" value={amount} onChange={(e) => setAmount(e.target.value)} required />
                   </div>
                 </div>
-                {selectedIncomeCategory === 'Other' && (
-                  <div className="other-description-container">
-                    <label htmlFor="otherDescription">Description</label>
-                    <input
-                      type="text"
-                      id="otherDescription"
-                      value={otherDescription}
-                      onChange={(e) => setOtherDescription(e.target.value)}
-                      placeholder="Enter description for Other"
-                      required
-                    />
-                  </div>
-                )}
                 <div className="category-container">
                   <label>Category</label>
                   <input type="text" value={selectedIncomeCategory} readOnly />
+                </div>
+                <div className="note-container">
+                  <label htmlFor="note">Note</label>
+                  <textarea
+                    id="note"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Add a note"
+                    rows="3"
+                  />
                 </div>
               </div>
               <div className="icon-grid" id="incomeIconSelection">
@@ -285,6 +258,3 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
 };
 
 export default Popup;
-
-
-

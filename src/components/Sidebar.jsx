@@ -1,4 +1,4 @@
-import { UilBars, UilSignOutAlt } from "@iconscout/react-unicons";
+import { UilBars } from "@iconscout/react-unicons";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { SidebarData } from "../Data/data.js";
@@ -51,7 +51,7 @@ const Sidebar = () => {
         })}
         {/* signoutIcon */}
         <div className="menuItem">
-          <UilSignOutAlt />
+         
         </div>
       </div>
     </motion.div>
