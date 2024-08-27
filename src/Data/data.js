@@ -23,6 +23,7 @@ export const SidebarData = [
   {
     icon: UilClipboardAlt,
     heading: "To Do List",
+    
   },
   {
     icon: UilUsersAlt,
@@ -38,11 +39,11 @@ export const SidebarData = [
   },
   {
     icon: UilFileAlt, // Replace with the appropriate icon for Audit Log
-    heading: 'Audit Log'
+    heading: 'AuditRecords'
   },
   {
     icon: UilSetting, // Replace with the appropriate icon for Settings
-    heading: 'Settings'
+    heading: 'SettingsPage'
   },
 ];
 

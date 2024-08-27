@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
 import Footer from './components/Footer.jsx';
 import MainDash from './components/MainDash/MainDash.jsx';
 import Sidebar from './components/Sidebar.jsx';
+import Analytics from './pages/Analytics';
+import AuditRecords from './pages/AuditRecords.jsx';
+import Customers from './pages/Customers';
+import Profile from './pages/Profile';
+import SettingsPage from './pages/SettingsPage.jsx';
+import ToDoList from './pages/ToDoList';
+
+
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -22,23 +31,36 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <div className="theme-toggle-container">
-        <button className={`theme-toggle ${darkMode ? 'dark' : 'light'}`} onClick={toggleTheme}>
-          {darkMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
-        </button>
+    <Router>
+      <div className="App">
+        <div className="theme-toggle-container">
+          <button className={`theme-toggle ${darkMode ? 'dark' : 'light'}`} onClick={toggleTheme}>
+            {darkMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
+          </button>
+        </div>
+        <div className="AppGlass">
+          <Sidebar /> {/* Sidebar remains fixed and unchanged */}
+          <Routes>
+            {/* MainDash as a separate page */}
+            <Route path="/" element={<MainDash />} />
+            {/* Other routes render within the same layout */}
+            <Route path="/dashboard" element={<MainDash />} />
+            <Route path="/to-do-list" element={<ToDoList />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/auditrecords" element={<AuditRecords />} />
+            <Route path="/settingspage" element={<SettingsPage />} />
+          </Routes>
+        </div>
+        <Footer />
       </div>
-      <div className="AppGlass">
-        <Sidebar />
-        <MainDash />
-
-      </div>
-      <Footer />
-    </div>
+    </Router>
   );
 }
 
 export default App;
+
 
 
 

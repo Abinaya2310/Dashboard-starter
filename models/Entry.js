@@ -14,6 +14,10 @@ const EntrySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  note: {
+    type: String, // Ensure note is defined here
+    required: true,
+  },
   expense: {
     type: String,
     default: '',

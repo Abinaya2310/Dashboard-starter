@@ -1,6 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import GetAppIcon from '@mui/icons-material/GetApp'; // Import the download icon
+import GetAppIcon from '@mui/icons-material/GetApp';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Alert,
@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { jsPDF } from 'jspdf'; // Import jsPDF
+import { jsPDF } from 'jspdf';
 import React, { useEffect, useRef, useState } from 'react';
 import Popup from '../Popup/Popup';
 import './Table.css';
@@ -36,9 +36,9 @@ export default function BasicTable() {
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
-  const [sortCriteria, setSortCriteria] = useState(''); // State for sorting criteria
+  const [sortCriteria, setSortCriteria] = useState('');
 
-  const newRowRef = useRef(null); // Ref for the newly added row
+  const newRowRef = useRef(null);
 
   useEffect(() => {
     fetchEntries();
@@ -188,13 +188,11 @@ export default function BasicTable() {
     setSuccessMessage('');
   };
 
-  // Sort the data based on the selected criteria
   const handleSortChange = async (e) => {
     const criteria = e.target.value;
     setSortCriteria(criteria);
 
     try {
-      // Fetch fresh data from the server
       const response = await axios.get('http://localhost:3000/api/entries');
       if (response.status === 200) {
         let sortedData = [...response.data];
@@ -240,10 +238,10 @@ export default function BasicTable() {
             return diffTime <= 365 * 24 * 60 * 60 * 1000;
           });
         } else if (criteria === 'all') {
-          sortedData = [...response.data]; // Show all data if 'All' is selected
+          sortedData = [...response.data];
         }
 
-        setData(sortedData); // Update state with sorted data
+        setData(sortedData);
       } else {
         console.error('Failed to fetch data:', response.statusText);
       }
@@ -259,7 +257,7 @@ export default function BasicTable() {
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <select value={sortCriteria} onChange={handleSortChange} className="SortBox" style={{ marginRight: '10px' }}>
             <option value="">Sort By</option>
-            <option value="all">All</option> {/* Add All option */}
+            <option value="all">All</option>
             <option value="today">Today</option>
             <option value="yesterday">Yesterday</option>
             <option value="last7days">Last 7 Days</option>
@@ -272,22 +270,22 @@ export default function BasicTable() {
         </div>
       </div>
       <div className="TableHeader">
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>ID</TableCell>
-            <TableCell align="right" sx={{ width: '90px', padding: '8px', borderRight: '1px solid #ddd' }}>DATE</TableCell>
-            <TableCell align="right" sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
-            <TableCell align="right" sx={{ width: '150px', padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
-            <TableCell align="right" sx={{ width: '140px', padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
-            <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>EXPENSE</TableCell>
-            <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
-            <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>AMOUNT</TableCell>
-            <TableCell align="right" sx={{ width: '150px', padding: '8px', borderRight: 'none' }} className="actions-header">ACTIONS</TableCell>
-          </TableRow>
-        </TableHead>
-      </Table>
-    </div>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>ID</TableCell>
+              <TableCell align="right" sx={{ width: '90px', padding: '8px', borderRight: '1px solid #ddd' }}>DATE</TableCell>
+              <TableCell align="right" sx={{ width: '150px', padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
+              <TableCell align="right" sx={{ width: '150px', padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
+              <TableCell align="right" sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
+              <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>EXPENSE</TableCell>
+              <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
+              <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>AMOUNT</TableCell>
+              <TableCell align="right" sx={{ width: '150px', padding: '8px', borderRight: 'none' }} className="actions-header">ACTIONS</TableCell>
+            </TableRow>
+          </TableHead>
+        </Table>
+      </div>
       <div className="TableBodyContainer">
         <TableContainer component={Paper}>
           <Table>
@@ -299,7 +297,7 @@ export default function BasicTable() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   layoutId={row.id.toString()}
-                  ref={selectedRowId === row.id ? newRowRef : null} // Assign ref to the new row
+                  ref={selectedRowId === row.id ? newRowRef : null}
                   className={selectedRowId === row.id ? 'selected-row' : ''}
                   onClick={() => handleRowClick(row.id)}
                 >
@@ -313,7 +311,7 @@ export default function BasicTable() {
                     {row.date ? (row.date.split(', ')[1] ? row.date.split(', ')[1] : 'N/A') : 'N/A'}
                   </TableCell>
                   <TableCell align="left">{row.category}</TableCell>
-                  <TableCell align="left">{row.note }</TableCell> {/* Display the note */}
+                  <TableCell align="left">{row.note}</TableCell> {/* Display the note */}
                   <TableCell align="left">
                     {row.expense ? row.expense : '-'}
                   </TableCell>
@@ -344,7 +342,7 @@ export default function BasicTable() {
                       color="secondary"
                       size="small"
                       style={{ marginRight: 8 }}
-                      onClick={() => handleDownload(row)} // Add the download handler
+                      onClick={() => handleDownload(row)}
                     >
                       <GetAppIcon />
                     </IconButton>
@@ -367,7 +365,7 @@ export default function BasicTable() {
         <Popup
           show={showPopup}
           handleClose={handleClosePopup}
-          addData={editRow ? updateEntry : addEntry}  // Use updateEntry if editing
+          addData={editRow ? updateEntry : addEntry}
           editRow={editRow}
         />
       )}
@@ -389,7 +387,7 @@ export default function BasicTable() {
               <strong>Category:</strong> {viewRow.category}
             </p>
             <p>
-              <strong>Note:</strong> {viewRow.note }
+              <strong>Note:</strong> {viewRow.note ? viewRow.note : '-'}
             </p>
             <p>
               <strong>Expense:</strong> {viewRow.expense ? viewRow.expense : '-'}
@@ -409,10 +407,7 @@ export default function BasicTable() {
         </Dialog>
       )}
 
-      <Dialog
-        open={confirmDelete}
-        onClose={handleCancelDelete}
-      >
+      <Dialog open={confirmDelete} onClose={handleCancelDelete}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <p>Are you sure you want to delete this entry?</p>
