@@ -15,7 +15,7 @@ const EntrySchema = new mongoose.Schema({
     required: true,
   },
   note: {
-    type: String, // Ensure note is defined here
+    type: String, 
     required: true,
   },
   expense: {
@@ -30,6 +30,17 @@ const EntrySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  totalIncome: {
+    type: Number,
+    default: 0,
+    select: false, // Exclude this field from query results by default
+  },
+  totalExpense: {
+    type: Number,
+    default: 0,
+    select: false, // Exclude this field from query results by default
+  },
 });
 
 module.exports = mongoose.model('Entry', EntrySchema);
+

@@ -7,7 +7,7 @@
   padding: 1rem;
   position: relative;
   cursor: pointer;
-  width: 90%; /* Reduced width to make the rectangle shorter */
+  width: 70%; /* Reduced width to make the rectangle shorter */
 }
 
 .CompactCard:hover {

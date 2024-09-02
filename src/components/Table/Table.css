@@ -10,7 +10,7 @@
   --border-radius: 12px;
   --dark-grey-color: #2c2c2c;
   --dark-text-color: #e0e0e0;
-  --base-font-size: 20px; /* Base font size */
+  --base-font-size: 14px; /* Increased base font size */
 }
 
 body {
@@ -22,12 +22,12 @@ body.dark-theme .Table {
   background-color: var(--dark-grey-color);
   color: var(--dark-text-color);
 }
+
 body.dark-theme .Table th,
 body.dark-theme .Table td {
   background-color: var(--dark-grey-color);
   color: var(--dark-text-color);
 }
-
 
 body.dark-theme .Table tr:hover td {
   background-color: var(--row-hover-color);
@@ -46,12 +46,12 @@ body.dark-theme .Table tr:hover td {
 
 .Header h3 {
   margin: 0;
-  font-size: 1.5rem; /* Increase font size */
+  font-size: 2rem; /* Increased font size */
 }
 
 .Header Button {
   margin-left: auto;
-  font-size: 1.1rem; /* Increase font size */
+  font-size: 1.4rem; /* Increased font size */
 }
 
 .TableHeader {
@@ -77,8 +77,8 @@ body.dark-theme .Table tr:hover td {
   padding: 16px;
   text-align: left;
   vertical-align: middle;
+  font-size: 1.2rem; /* Increased font size for table cells */
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-size: 2rem; /* Increase font size */
 }
 
 .Table th {
@@ -89,6 +89,19 @@ body.dark-theme .Table tr:hover td {
   border-bottom: 2px solid var(--primary-color);
   letter-spacing: 1px;
   white-space: nowrap;
+  font-size: 1.3rem; /* Increased font size for table headers */
+}
+
+/* Specific styles for ID, Category, Date, and Income columns */
+.Table td:first-child, /* ID column */
+.Table th:first-child, /* ID column header */
+.Table td:nth-child(2), /* Date column */
+.Table th:nth-child(2), /* Date column header */
+.Table td:nth-child(4), /* Category column */
+.Table th:nth-child(4), /* Category column header */
+.Table td:nth-child(7), /* Income column */
+.Table th:nth-child(7) { /* Income column header */
+  font-size: 1.5rem; /* Increase font size for specified columns */
 }
 
 .actions-header {
@@ -124,10 +137,10 @@ body.dark-theme .Table tr:hover td {
 .ButtonGroup button {
   margin-right: 8px;
   transition: background-color 0.3s ease, color 0.3s ease;
-  padding: 8px 16px;
+  padding: 12px 20px; /* Increased padding */
   border-radius: var(--border-radius);
   border: none;
-  font-size: 2rem; /* Increase font size */
+  font-size: 2.2rem; /* Increased font size */
 }
 
 .ButtonGroup .view-button {
@@ -135,7 +148,6 @@ body.dark-theme .Table tr:hover td {
   color: #fff;
 }
 
-/* CSS for the selected row with hover effect */
 .selected-row {
   background-color: var(--secondary-color) !important;
   color: cornsilk;
@@ -147,11 +159,10 @@ body.dark-theme .Table tr:hover td {
   color: #fff !important;
 }
 
-/* Style for the sort dropdown */
 .SortBox {
   margin-right: 10px;
-  padding: 8px;
-  font-size: 1.1rem; /* Increase font size */
+  padding: 10px; /* Increased padding */
+  font-size: 1.4rem; /* Increased font size */
   border-radius: 4px;
   border: 1px solid #ccc;
   background-color: white;
@@ -166,7 +177,6 @@ body.dark-theme .Table tr:hover td {
   box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
 }
 
-/* Dark mode styles */
 body.dark-theme .SortBox {
   background-color: var(--dark-grey-color);
   color: var(--dark-text-color);
@@ -178,11 +188,10 @@ body.dark-theme .SortBox:focus {
   box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
 }
 
-/* Modern style for the Add New Entry button */
 .AddNewEntryButton {
   margin-left: 10px;
-  padding: 10px 16px;
-  font-size: 1.1rem; /* Increase font size */
+  padding: 12px 20px; /* Increased padding */
+  font-size: 1.4rem; /* Increased font size */
   border-radius: 4px;
   background-color: var(--primary-color);
   color: white;
@@ -202,7 +211,6 @@ body.dark-theme .SortBox:focus {
   outline: none;
 }
 
-/* Dark mode styles */
 body.dark-theme .AddNewEntryButton {
   background-color: var(--dark-grey-color);
   color: var(--dark-text-color);
@@ -218,7 +226,6 @@ body.dark-theme .AddNewEntryButton:focus {
   box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
 }
 
-/* Add this to ensure the clicked row remains sky blue on hover */
 .Table tr.clicked-row:hover td {
   background-color: skyblue !important;
   color: var(--text-color) !important;

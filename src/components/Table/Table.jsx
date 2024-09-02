@@ -5,6 +5,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Alert,
   Button,
+  Card,
+  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
@@ -18,6 +20,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography
 } from '@mui/material';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -28,6 +31,8 @@ import './Table.css';
 
 export default function BasicTable() {
   const [data, setData] = useState([]);
+  const [totalIncome, setTotalIncome] = useState(0); // State for total income based on filter
+  const [totalExpense, setTotalExpense] = useState(0); // State for total expense based on filter
   const [showPopup, setShowPopup] = useState(false);
   const [editRow, setEditRow] = useState(null);
   const [viewRow, setViewRow] = useState(null);
@@ -49,6 +54,7 @@ export default function BasicTable() {
       const response = await axios.get('http://localhost:3000/api/entries');
       if (response.status === 200) {
         setData(response.data);
+        calculateTotals(response.data); // Calculate total income and expense on initial load
       } else {
         console.error('Failed to fetch data:', response.statusText);
       }
@@ -72,6 +78,7 @@ export default function BasicTable() {
       }, 100);
 
       setSuccessMessage('Entry added successfully!');
+      calculateTotals([response.data, ...data]); // Recalculate totals after adding an entry
     } catch (error) {
       console.error('Error adding data', error);
     }
@@ -83,6 +90,7 @@ export default function BasicTable() {
       if (response.status === 200) {
         setData((prevData) => prevData.map((row) => (row.id === updatedData.id ? updatedData : row)));
         setSuccessMessage('Entry updated successfully!');
+        calculateTotals(data.map((row) => (row.id === updatedData.id ? updatedData : row))); // Recalculate totals after updating an entry
       }
     } catch (error) {
       console.error('Error updating data', error);
@@ -94,6 +102,7 @@ export default function BasicTable() {
       await axios.delete(`http://localhost:3000/api/entries/${id}`);
       setData((prevData) => prevData.filter((row) => row.id !== id));
       setDeleteSuccessMessage('Entry deleted successfully!');
+      calculateTotals(data.filter((row) => row.id !== id)); // Recalculate totals after deleting an entry
     } catch (error) {
       console.error('Error deleting data', error);
     }
@@ -187,6 +196,31 @@ export default function BasicTable() {
   const handleCloseSuccessMessage = () => {
     setSuccessMessage('');
   };
+  // Function to calculate and update total income and expense, excluding '-' and invalid values
+  const calculateTotals = (filteredData) => {
+    const totalIncome = filteredData.reduce((sum, row) => {
+      const incomeStr = row.income?.trim(); // Trim whitespace
+      const income = parseFloat(incomeStr.replace(/[^0-9.-]+/g, '')); // Remove non-numeric characters and convert to float
+      if (!isNaN(income) && incomeStr !== '-' && income > 0) {  // Exclude invalid or '-' values and negative numbers
+        return sum + income;
+      }
+      return sum;
+    }, 0);
+
+    const totalExpense = filteredData.reduce((sum, row) => {
+      const expenseStr = row.expense?.trim(); // Trim whitespace
+      const expense = parseFloat(expenseStr.replace(/[^0-9.-]+/g, '')); // Remove non-numeric characters and convert to float
+      if (!isNaN(expense) && expenseStr !== '-' && expense > 0) {  // Exclude invalid or '-' values and negative numbers
+        return sum + expense;
+      }
+      return sum;
+    }, 0);
+    
+    console.log('Calculated Total Income:', totalIncome); // Debugging log
+    console.log('Calculated Total Expense:', totalExpense); // Debugging log
+    setTotalIncome(totalIncome); // Update state with the calculated total income
+    setTotalExpense(totalExpense); // Update state with the calculated total expense
+  };
 
   const handleSortChange = async (e) => {
     const criteria = e.target.value;
@@ -241,6 +275,9 @@ export default function BasicTable() {
           sortedData = [...response.data];
         }
 
+        console.log('Sorted Data:', sortedData);
+
+        calculateTotals(sortedData);
         setData(sortedData);
       } else {
         console.error('Failed to fetch data:', response.statusText);
@@ -269,23 +306,49 @@ export default function BasicTable() {
           </Button>
         </div>
       </div>
+
+      {/* Total Income Card */}
+      <Card sx={{ minWidth: 275, marginBottom: 2 }}>
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            Total Income
+          </Typography>
+          <Typography variant="h5" component="div">
+            {totalIncome.toLocaleString()} {/* Format as needed */}
+          </Typography>
+        </CardContent>
+      </Card>
+
+      {/* Total Expense Card */}
+      <Card sx={{ minWidth: 275, marginBottom: 2 }}>
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            Total Expense
+          </Typography>
+          <Typography variant="h5" component="div">
+            {totalExpense.toLocaleString()} {/* Format as needed */}
+          </Typography>
+        </CardContent>
+      </Card>
+
       <div className="TableHeader">
         <Table>
           <TableHead>
             <TableRow>
               <TableCell sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>ID</TableCell>
               <TableCell align="right" sx={{ width: '90px', padding: '8px', borderRight: '1px solid #ddd' }}>DATE</TableCell>
-              <TableCell align="right" sx={{ width: '150px', padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
-              <TableCell align="right" sx={{ width: '150px', padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
-              <TableCell align="right" sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
+              <TableCell align="right" sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
+              <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
+              <TableCell align="right" sx={{ width: '60px', padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
               <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>EXPENSE</TableCell>
-              <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
+              <TableCell align="right" sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
               <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>AMOUNT</TableCell>
-              <TableCell align="right" sx={{ width: '150px', padding: '8px', borderRight: 'none' }} className="actions-header">ACTIONS</TableCell>
+              <TableCell align="right" sx={{ width: '10px', padding: '8px', borderRight: 'none' }} className="actions-header">ACTIONS</TableCell>
             </TableRow>
           </TableHead>
         </Table>
       </div>
+
       <div className="TableBodyContainer">
         <TableContainer component={Paper}>
           <Table>
@@ -301,56 +364,25 @@ export default function BasicTable() {
                   className={selectedRowId === row.id ? 'selected-row' : ''}
                   onClick={() => handleRowClick(row.id)}
                 >
-                  <TableCell component="th" scope="row">
-                    {row.id}
-                  </TableCell>
-                  <TableCell align="left">
-                    {row.date ? row.date.split(', ')[0] : 'N/A'}
-                  </TableCell>
-                  <TableCell align="left">
-                    {row.date ? (row.date.split(', ')[1] ? row.date.split(', ')[1] : 'N/A') : 'N/A'}
-                  </TableCell>
+                  <TableCell component="th" scope="row">{row.id}</TableCell>
+                  <TableCell align="left">{row.date ? row.date.split(', ')[0] : 'N/A'}</TableCell>
+                  <TableCell align="left">{row.date ? (row.date.split(', ')[1] ? row.date.split(', ')[1] : 'N/A') : 'N/A'}</TableCell>
                   <TableCell align="left">{row.category}</TableCell>
-                  <TableCell align="left">{row.note}</TableCell> {/* Display the note */}
-                  <TableCell align="left">
-                    {row.expense ? row.expense : '-'}
-                  </TableCell>
-                  <TableCell align="left">
-                    {row.income ? row.income : '-'}
-                  </TableCell>
-                  <TableCell align="left">
-                    {row.currency === 'USD' ? '$' : '₹'} {row.amount}
-                  </TableCell>
+                  <TableCell align="left">{row.note}</TableCell>
+                  <TableCell align="left">{row.expense ? row.expense : '-'}</TableCell>
+                  <TableCell align="left">{row.income ? row.income : '-'}</TableCell>
+                  <TableCell align="left">{row.currency === 'USD' ? '$' : '₹'} {row.amount}</TableCell>
                   <TableCell align="left" className="actions-cell">
-                    <IconButton
-                      color="info"
-                      size="small"
-                      style={{ marginRight: 8 }}
-                      onClick={() => handleView(row)}
-                    >
+                    <IconButton color="info" size="small" style={{ marginRight: 8 }} onClick={() => handleView(row)}>
                       <VisibilityIcon />
                     </IconButton>
-                    <IconButton
-                      color="primary"
-                      size="small"
-                      style={{ marginRight: 8 }}
-                      onClick={() => handleEdit(row)}
-                    >
+                    <IconButton color="primary" size="small" style={{ marginRight: 8 }} onClick={() => handleEdit(row)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton
-                      color="secondary"
-                      size="small"
-                      style={{ marginRight: 8 }}
-                      onClick={() => handleDownload(row)}
-                    >
+                    <IconButton color="secondary" size="small" style={{ marginRight: 8 }} onClick={() => handleDownload(row)}>
                       <GetAppIcon />
                     </IconButton>
-                    <IconButton
-                      color="secondary"
-                      size="small"
-                      onClick={() => handleDeleteClick(row.id)}
-                    >
+                    <IconButton color="secondary" size="small" onClick={() => handleDeleteClick(row.id)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -374,30 +406,14 @@ export default function BasicTable() {
         <Dialog open={Boolean(viewRow)} onClose={handleCloseView}>
           <DialogTitle>View Entry</DialogTitle>
           <DialogContent>
-            <p>
-              <strong>ID:</strong> {viewRow.id}
-            </p>
-            <p>
-              <strong>Date:</strong> {viewRow?.date ? viewRow.date.split(', ')[0] : 'N/A'}
-            </p>
-            <p>
-              <strong>Time:</strong> {viewRow?.date ? (viewRow.date.split(', ')[1] ? viewRow.date.split(', ')[1] : 'N/A') : 'N/A'}
-            </p>
-            <p>
-              <strong>Category:</strong> {viewRow.category}
-            </p>
-            <p>
-              <strong>Note:</strong> {viewRow.note ? viewRow.note : '-'}
-            </p>
-            <p>
-              <strong>Expense:</strong> {viewRow.expense ? viewRow.expense : '-'}
-            </p>
-            <p>
-              <strong>Income:</strong> {viewRow.income ? viewRow.income : '-'}
-            </p>
-            <p>
-              <strong>Amount:</strong> {viewRow.currency === 'USD' ? '$' : '₹'} {viewRow.amount}
-            </p>
+            <p><strong>ID:</strong> {viewRow.id}</p>
+            <p><strong>Date:</strong> {viewRow?.date ? viewRow.date.split(', ')[0] : 'N/A'}</p>
+            <p><strong>Time:</strong> {viewRow?.date ? (viewRow.date.split(', ')[1] ? viewRow.date.split(', ')[1] : 'N/A') : 'N/A'}</p>
+            <p><strong>Category:</strong> {viewRow.category}</p>
+            <p><strong>Note:</strong> {viewRow.note ? viewRow.note : '-'}</p>
+            <p><strong>Expense:</strong> {viewRow.expense ? viewRow.expense : '-'}</p>
+            <p><strong>Income:</strong> {viewRow.income ? viewRow.income : '-'}</p>
+            <p><strong>Amount:</strong> {viewRow.currency === 'USD' ? '$' : '₹'} {viewRow.amount}</p>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseView} color="primary">

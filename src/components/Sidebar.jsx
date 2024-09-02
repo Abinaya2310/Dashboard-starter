@@ -1,7 +1,7 @@
 import { UilBars } from "@iconscout/react-unicons";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { useNavigate } from "react-router-dom";
 import { SidebarData } from "../Data/data.js";
 import Logo from "../imgs/logo.png";
 import "./Sidebar.css";
@@ -9,6 +9,7 @@ import "./Sidebar.css";
 const Sidebar = () => {
   const [selected, setSelected] = useState(0);
   const [expanded, setExpaned] = useState(true);
+  const navigate = useNavigate();
 
   const sidebarVariants = {
     true: {
@@ -17,6 +18,12 @@ const Sidebar = () => {
     false: {
       left: '-60%'
     }
+  };
+
+  // Helper function to handle navigation and state update
+  const handleNavigation = (index, path) => {
+    setSelected(index); // Update selected state
+    navigate(path); // Trigger navigation
   };
 
   return (
@@ -38,20 +45,16 @@ const Sidebar = () => {
 
         <div className="menu">
           {SidebarData.map((item, index) => {
+            const path = index === 0 ? "/dashboard" : item.heading.toLowerCase().replace(/ /g, "-");
             return (
-              <Link 
-                to={
-                  index === 0
-                    ? "/dashboard"
-                    : item.heading.toLowerCase().replace(/ /g, "-")
-                }
+              <div
                 key={index}
                 className={selected === index ? "menuItem active" : "menuItem"}
-                onClick={() => setSelected(index)}
+                onClick={() => handleNavigation(index, path)}
               >
                 <item.icon />
                 <span>{item.heading}</span>
-              </Link>
+              </div>
             );
           })}
           {/* signoutIcon */}
@@ -65,3 +68,5 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+
