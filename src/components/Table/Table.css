@@ -18,21 +18,6 @@ body {
   color: var(--text-color);
 }
 
-body.dark-theme .Table {
-  background-color: var(--dark-grey-color);
-  color: var(--dark-text-color);
-}
-
-body.dark-theme .Table th,
-body.dark-theme .Table td {
-  background-color: var(--dark-grey-color);
-  color: var(--dark-text-color);
-}
-
-body.dark-theme .Table tr:hover td {
-  background-color: var(--row-hover-color);
-}
-
 .TableContainer {
   margin: 20px;
 }
@@ -45,7 +30,7 @@ body.dark-theme .Table tr:hover td {
 }
 
 .Header h3 {
-  margin: 0;
+  margin: 16px;
   font-size: 2rem; /* Increased font size */
 }
 
@@ -60,6 +45,7 @@ body.dark-theme .Table tr:hover td {
   background: var(--header-background-color);
   color: var(--header-text-color);
   display: grid;
+  font-size: 24px;
 }
 
 .TableBodyContainer {
@@ -77,7 +63,7 @@ body.dark-theme .Table tr:hover td {
   padding: 16px;
   text-align: left;
   vertical-align: middle;
-  font-size: 1.2rem; /* Increased font size for table cells */
+  font-size: 3.2rem; /* Increased font size for table cells */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -89,7 +75,7 @@ body.dark-theme .Table tr:hover td {
   border-bottom: 2px solid var(--primary-color);
   letter-spacing: 1px;
   white-space: nowrap;
-  font-size: 1.3rem; /* Increased font size for table headers */
+  font-size: 3.3rem; /* Increased font size for table headers */
 }
 
 /* Specific styles for ID, Category, Date, and Income columns */
@@ -101,7 +87,7 @@ body.dark-theme .Table tr:hover td {
 .Table th:nth-child(4), /* Category column header */
 .Table td:nth-child(7), /* Income column */
 .Table th:nth-child(7) { /* Income column header */
-  font-size: 1.5rem; /* Increase font size for specified columns */
+  font-size: 3.5rem; /* Increase font size for specified columns */
 }
 
 .actions-header {
@@ -119,9 +105,38 @@ body.dark-theme .Table tr:hover td {
   padding: 8px;
 }
 
+/* Light Theme: Selected Row */
+.selected-row {
+  background-color: skyblue !important; /* Sky blue color for selected row in light mode */
+  color: #333 !important; /* Darker text color for better readability */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.selected-row:hover {
+  background-color: powderblue !important; /* Lighter shade on hover for better visibility */
+  color: #fff !important; /* White text color for contrast */
+}
+
+/* Dark Theme: Selected Row */
+body.dark-theme .selected-row {
+  background-color: skyblue !important; /* Sky blue color for selected row in dark mode */
+  color: white !important; /* White text color for better contrast */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-theme .selected-row:hover {
+  background-color: powderblue !important; /* Slightly darker shade on hover for better visibility */
+  color: #fff !important;
+}
+
 .Table tr:hover td {
   background-color: var(--row-hover-color);
   color: var(--primary-color);
+}
+
+body.dark-theme .Table tr:hover td {
+  background-color: skyblue; /* Use skyblue hover color in dark theme */
+  color: white; /* White text color for hover in dark mode */
 }
 
 .Table tr:last-child td {
@@ -148,21 +163,11 @@ body.dark-theme .Table tr:hover td {
   color: #fff;
 }
 
-.selected-row {
-  background-color: var(--secondary-color) !important;
-  color: cornsilk;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.selected-row:hover {
-  background-color: skyblue;
-  color: #fff !important;
-}
-
 .SortBox {
+  margin-top: 0px;
   margin-right: 10px;
-  padding: 10px; /* Increased padding */
-  font-size: 1.4rem; /* Increased font size */
+  padding: 6px; /* Reduced padding to make the box smaller */
+  font-size: 1.2rem; /* Reduced font size for a smaller appearance */
   border-radius: 4px;
   border: 1px solid #ccc;
   background-color: white;
@@ -172,10 +177,13 @@ body.dark-theme .Table tr:hover td {
   transition: all 0.3s ease;
 }
 
+
 .SortBox:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
 }
+/* Light theme styles for SortBox */
+
 
 body.dark-theme .SortBox {
   background-color: var(--dark-grey-color);
@@ -189,9 +197,11 @@ body.dark-theme .SortBox:focus {
 }
 
 .AddNewEntryButton {
+  margin-top: 0px;
   margin-left: 10px;
-  padding: 12px 20px; /* Increased padding */
-  font-size: 1.4rem; /* Increased font size */
+  padding: 12px 20px; /* Increased padding for larger button */
+  font-size: 1.6rem; /* Increased font size */
+  width: 200px; /* Set a fixed width to make the button longer */
   border-radius: 4px;
   background-color: var(--primary-color);
   color: white;
@@ -200,6 +210,7 @@ body.dark-theme .SortBox:focus {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
+
 
 .AddNewEntryButton:hover {
   background-color: #2c387e;

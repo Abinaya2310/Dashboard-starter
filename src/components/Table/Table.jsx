@@ -4,6 +4,7 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Alert,
+  Box, // Importing Box component for flexbox layout
   Button,
   Card,
   CardContent,
@@ -12,9 +13,9 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Table as MuiTable,
   Paper,
-  Snackbar,
-  Table,
+  Snackbar, // Renamed the imported Table to MuiTable
   TableBody,
   TableCell,
   TableContainer,
@@ -29,7 +30,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Popup from '../Popup/Popup';
 import './Table.css';
 
-export default function BasicTable() {
+export default function CustomTable() {  // Renamed the component to 'CustomTable'
   const [data, setData] = useState([]);
   const [totalIncome, setTotalIncome] = useState(0); // State for total income based on filter
   const [totalExpense, setTotalExpense] = useState(0); // State for total expense based on filter
@@ -111,41 +112,55 @@ export default function BasicTable() {
   const handleDownload = (row) => {
     const doc = new jsPDF();
 
+    // Set font size and style
+    doc.setFontSize(12);
+    doc.setFont("Times-Roman", "bold"); // Changed font to Times-Roman
+
     const lineHeight = 10;
     const startX = 10;
     let currentY = 10;
 
-    doc.text(`ID:`, startX, currentY);
-    doc.text(`${row.id}`, startX + 50, currentY);
+    // Function to add text with a label and value, ensuring all values are strings
+    const addTextWithLabel = (label, value, yPosition) => {
+      doc.text(label, startX, yPosition);
+      doc.setFont("Times-Roman", "normal"); // Regular font for values
+      doc.text(String(value), startX + 50, yPosition); // Convert value to string
+      doc.setFont("Times-Roman", "bold"); // Bold font for the next label
+    };
+
+    // Add text with improved alignment and styling
+    addTextWithLabel("ID:", row.id ? String(row.id) : 'N/A', currentY);
 
     currentY += lineHeight;
-    doc.text(`Date:`, startX, currentY);
-    doc.text(`${row.date ? row.date.split(', ')[0] : 'N/A'}`, startX + 50, currentY);
+    addTextWithLabel("Date:", row.date ? String(row.date.split(", ")[0]) : "N/A", currentY);
 
     currentY += lineHeight;
-    doc.text(`Time:`, startX, currentY);
-    doc.text(`${row.date ? (row.date.split(', ')[1] ? row.date.split(', ')[1] : 'N/A') : 'N/A'}`, startX + 50, currentY);
+    addTextWithLabel(
+      "Time:",
+      row.date ? (row.date.split(", ")[1] ? String(row.date.split(", ")[1]) : "N/A") : "N/A",
+      currentY
+    );
 
     currentY += lineHeight;
-    doc.text(`Category:`, startX, currentY);
-    doc.text(`${row.category}`, startX + 50, currentY);
+    addTextWithLabel("Category:", row.category ? String(row.category) : 'N/A', currentY);
 
     currentY += lineHeight;
-    doc.text(`Note:`, startX, currentY);
-    doc.text(`${row.note}`, startX + 50, currentY);
+    addTextWithLabel("Note:", row.note ? String(row.note) : 'N/A', currentY);
 
     currentY += lineHeight;
-    doc.text(`Expense:`, startX, currentY);
-    doc.text(`${row.expense ? row.expense : '-'}`, startX + 50, currentY);
+    addTextWithLabel("Expense:", row.expense ? String(row.expense) : "-", currentY);
 
     currentY += lineHeight;
-    doc.text(`Income:`, startX, currentY);
-    doc.text(`${row.income ? row.income : '-'}`, startX + 50, currentY);
+    addTextWithLabel("Income:", row.income ? String(row.income) : "-", currentY);
 
     currentY += lineHeight;
-    doc.text(`Amount:`, startX, currentY);
-    doc.text(`${row.currency === 'USD' ? '$' : '₹'} ${row.amount}`, startX + 50, currentY);
+    addTextWithLabel(
+      "Amount:",
+      `${row.currency === "USD" ? "$" : "₹"} ${row.amount ? String(row.amount) : '0'}`,
+      currentY
+    );
 
+    // Save the PDF
     doc.save(`entry-${row.id}.pdf`);
   };
 
@@ -196,7 +211,7 @@ export default function BasicTable() {
   const handleCloseSuccessMessage = () => {
     setSuccessMessage('');
   };
-  // Function to calculate and update total income and expense, excluding '-' and invalid values
+
   const calculateTotals = (filteredData) => {
     const totalIncome = filteredData.reduce((sum, row) => {
       const incomeStr = row.income?.trim(); // Trim whitespace
@@ -287,71 +302,144 @@ export default function BasicTable() {
     }
   };
 
+  // New function to handle downloading sorted data
+  const handleDownloadSortedData = () => {
+    if (data.length === 0) {
+      console.error('No data available to download.');
+      return;
+    }
+
+    const headers = ['ID', 'Date', 'Time', 'Category', 'Note', 'Expense', 'Income', 'Amount'];
+    
+    // Ensure all values are correctly formatted as strings to prevent any ID visibility issues
+    const csvRows = data.map(row => [
+      row.id !== undefined ? String(row.id) : 'N/A', // Ensure ID is a string
+      row.date ? row.date.split(', ')[0] : 'N/A',
+      row.date ? (row.date.split(', ')[1] ? String(row.date.split(', ')[1]) : "N/A") : "N/A",
+      row.category ? String(row.category) : '-',
+      row.note ? String(row.note) : '-',
+      row.expense ? String(row.expense) : '-',
+      row.income ? String(row.income) : '-',
+      `${row.currency === 'USD' ? '$' : '₹'} ${row.amount ? String(row.amount) : '0'}`
+    ]);
+
+    // Combine headers and rows
+    const csvContent = [headers, ...csvRows].map(e => e.join(",")).join("\n");
+
+    // Add UTF-8 BOM to ensure proper encoding for special characters
+    const csvWithBom = "\uFEFF" + csvContent;
+
+    // Create a Blob and download it
+    const blob = new Blob([csvWithBom], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `sorted_data_${sortCriteria || 'all'}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="TableContainer">
       <div className="Header">
         <h3>Money Tracker</h3>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <select value={sortCriteria} onChange={handleSortChange} className="SortBox" style={{ marginRight: '10px' }}>
-            <option value="">Sort By</option>
-            <option value="all">All</option>
-            <option value="today">Today</option>
-            <option value="yesterday">Yesterday</option>
-            <option value="last7days">Last 7 Days</option>
-            <option value="last1month">Last 1 Month</option>
-            <option value="last1year">Last 1 Year</option>
-          </select>
-          <Button variant="contained" color="primary" onClick={handleOpenPopup} className="AddNewEntryButton">
-            Add New Entry
-          </Button>
-        </div>
       </div>
 
-      {/* Total Income Card */}
-      <Card sx={{ minWidth: 275, marginBottom: 2 }}>
-        <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Total Income
-          </Typography>
-          <Typography variant="h5" component="div">
-            {totalIncome.toLocaleString()} {/* Format as needed */}
-          </Typography>
-        </CardContent>
-      </Card>
+      {/* Flex container to align the cards side by side */}
+      <Box sx={{ display: 'flex', gap: 2, marginBottom: 2 }}> 
+        {/* Total Income Card */}
+        <Card
+          sx={{
+            width: 180, // Reduced width for a smaller box size
+            height: 100, // Reduced height for a compact look
+            padding: 1, // Slight padding to fit content nicely
+            borderRadius: '12px', // Rounded corners for a modern look
+            background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', // Gradient background
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
+            color: 'white', // White text color for contrast
+          }}
+        >
+          <CardContent>
+            <Typography sx={{ fontSize: 18, fontWeight: 'bold' }} gutterBottom>
+              Total Income
+            </Typography>
+            <Typography variant="h6" component="div">
+              ₹ {totalIncome.toLocaleString()} {/* Include rupees symbol */}
+            </Typography>
+          </CardContent>
+        </Card>
 
-      {/* Total Expense Card */}
-      <Card sx={{ minWidth: 275, marginBottom: 2 }}>
-        <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Total Expense
-          </Typography>
-          <Typography variant="h5" component="div">
-            {totalExpense.toLocaleString()} {/* Format as needed */}
-          </Typography>
-        </CardContent>
-      </Card>
+        {/* Total Expense Card */}
+        <Card
+          sx={{
+            width: 180, // Reduced width for a smaller box size
+            height: 100, // Reduced height for a compact look
+            padding: 1, // Slight padding to fit content nicely
+            borderRadius: '12px', // Rounded corners for a modern look
+            background: 'linear-gradient(135deg, #ff9a9e 0%, #ff6a88 100%)', // Gradient in shades of pink
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
+            color: 'white', // White text color for contrast
+          }}
+        >
+          <CardContent>
+            <Typography sx={{ fontSize: 18, fontWeight: 'bold' }} gutterBottom>
+              Total Expense
+            </Typography>
+            <Typography variant="h6" component="div">
+              ₹ {totalExpense.toLocaleString()} {/* Include rupees symbol */}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
+        <select value={sortCriteria} onChange={handleSortChange} className="SortBox" style={{ marginRight: '10px' }}>
+          <option value="">Sort By</option>
+          <option value="all">All</option>
+          <option value="today">Today</option>
+          <option value="yesterday">Yesterday</option>
+          <option value="last7days">Last 7 Days</option>
+          <option value="last1month">Last 1 Month</option>
+          <option value="last1year">Last 1 Year</option>
+        </select>
+
+        {/* New Download Button */}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleDownloadSortedData}
+          style={{ marginRight: '10px' }}
+        >
+          Download
+        </Button>
+
+        <Button variant="contained" color="primary" onClick={handleOpenPopup} className="AddNewEntryButton">
+          Add New Entry
+        </Button>
+      </div>
 
       <div className="TableHeader">
-        <Table>
+        <MuiTable>
           <TableHead>
             <TableRow>
               <TableCell sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>ID</TableCell>
-              <TableCell align="right" sx={{ width: '90px', padding: '8px', borderRight: '1px solid #ddd' }}>DATE</TableCell>
-              <TableCell align="right" sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
-              <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
-              <TableCell align="right" sx={{ width: '60px', padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
-              <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>EXPENSE</TableCell>
-              <TableCell align="right" sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
-              <TableCell align="right" sx={{ width: '120px', padding: '8px', borderRight: '1px solid #ddd' }}>AMOUNT</TableCell>
-              <TableCell align="right" sx={{ width: '10px', padding: '8px', borderRight: 'none' }} className="actions-header">ACTIONS</TableCell>
+              <TableCell align="right" sx={{ width: '', padding: '8px', borderRight: '1px solid #ddd' }}>DATE</TableCell>
+              <TableCell align="right" sx={{ width: '50px', padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
+              <TableCell align="right" sx={{ width: '30px', padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
+              <TableCell align="right" sx={{ width: '50px', padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
+              <TableCell align="right" sx={{ width: '40px', padding: '8px', borderRight: '1px solid #ddd' }}>EXPENSE</TableCell>
+              <TableCell align="right" sx={{ width: '40px', padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
+              <TableCell align="right" sx={{ width: '60px', padding: '8px', borderRight: '1px solid #ddd' }}>AMOUNT</TableCell>
+              <TableCell align="right" sx={{ width: '100px', padding: '8px', borderRight: 'none' }} className="actions-header">ACTIONS</TableCell>
             </TableRow>
           </TableHead>
-        </Table>
+        </MuiTable>
       </div>
 
       <div className="TableBodyContainer">
         <TableContainer component={Paper}>
-          <Table>
+          <MuiTable>
             <TableBody>
               {data.map((row) => (
                 <motion.tr
@@ -389,7 +477,7 @@ export default function BasicTable() {
                 </motion.tr>
               ))}
             </TableBody>
-          </Table>
+          </MuiTable>
         </TableContainer>
       </div>
 
@@ -403,20 +491,104 @@ export default function BasicTable() {
       )}
 
       {viewRow && (
-        <Dialog open={Boolean(viewRow)} onClose={handleCloseView}>
-          <DialogTitle>View Entry</DialogTitle>
-          <DialogContent>
-            <p><strong>ID:</strong> {viewRow.id}</p>
-            <p><strong>Date:</strong> {viewRow?.date ? viewRow.date.split(', ')[0] : 'N/A'}</p>
-            <p><strong>Time:</strong> {viewRow?.date ? (viewRow.date.split(', ')[1] ? viewRow.date.split(', ')[1] : 'N/A') : 'N/A'}</p>
-            <p><strong>Category:</strong> {viewRow.category}</p>
-            <p><strong>Note:</strong> {viewRow.note ? viewRow.note : '-'}</p>
-            <p><strong>Expense:</strong> {viewRow.expense ? viewRow.expense : '-'}</p>
-            <p><strong>Income:</strong> {viewRow.income ? viewRow.income : '-'}</p>
-            <p><strong>Amount:</strong> {viewRow.currency === 'USD' ? '$' : '₹'} {viewRow.amount}</p>
+        <Dialog
+          open={Boolean(viewRow)}
+          onClose={handleCloseView}
+          maxWidth="md" // Sets the maximum width of the dialog to medium
+          fullWidth // Makes the dialog take full width up to the maxWidth
+          PaperProps={{
+            style: {
+              borderRadius: '20px', // More rounded corners for a sleek look
+              padding: '30px', // Adds generous padding inside the dialog
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.2)', // Deeper shadow for a modern, floating effect
+              backgroundImage: 'linear-gradient(135deg, #e0f7fa, #ffebee)', // Gradient background with stylish colors
+            },
+          }}
+        >
+          <DialogTitle
+            style={{
+              fontSize: '1.8rem', // Larger font size for the title
+              fontWeight: '600', // Semi-bold font for a modern look
+              color: '#ff6f61', // A vibrant color for the title text
+              textAlign: 'center', // Center align the title text
+              marginBottom: '15px', // Adds space below the title
+              textTransform: 'uppercase', // Uppercase styling for a bold statement
+              letterSpacing: '1.5px', // Adds letter spacing for modern typography
+            }}
+          >
+            View Entry
+          </DialogTitle>
+          <DialogContent
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '15px', // Adds more space between each row for better readability
+              fontSize: '1.3rem', // Slightly larger font for the content
+              color: '#555', // Softer text color for a modern feel
+              padding: '0 20px', // Padding for the table content
+            }}
+          >
+            <table
+              style={{
+                width: '100%',
+                borderCollapse: 'collapse', // Collapses the borders for a clean table look
+              }}
+            >
+              <tbody>
+                <tr>
+                  <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>ID:</td>
+                  <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow.id}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>Date:</td>
+                  <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow?.date ? viewRow.date.split(', ')[0] : 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>Time:</td>
+                  <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow?.date ? (viewRow.date.split(', ')[1] ? viewRow.date.split(', ')[1] : 'N/A') : 'N/A'}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>Category:</td>
+                  <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow.category}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>Note:</td>
+                  <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow.note ? viewRow.note : '-'}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>Expense:</td>
+                  <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow.expense ? viewRow.expense : '-'}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>Income:</td>
+                  <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow.income ? viewRow.income : '-'}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>Amount:</td>
+                  <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow.currency === 'USD' ? '$' : '₹'} {viewRow.amount}</td>
+                </tr>
+              </tbody>
+            </table>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseView} color="primary">
+          <DialogActions
+            style={{
+              justifyContent: 'center', // Center-align the buttons
+              paddingTop: '20px', // Adds more padding at the top for spacing
+            }}
+          >
+            <Button
+              onClick={handleCloseView}
+              variant="contained"
+              style={{
+                backgroundColor: '#00796b', // Vibrant color for the button
+                color: 'white',
+                borderRadius: '20px', // More rounded button for a modern look
+                padding: '10px 20px', // Padding for button size
+                textTransform: 'none', // Keeps the button text in sentence case
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)', // Button shadow for depth
+                fontWeight: 'bold', // Bold text for emphasis
+              }}
+            >
               Close
             </Button>
           </DialogActions>

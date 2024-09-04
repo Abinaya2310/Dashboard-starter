@@ -6,11 +6,14 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 18px; /* Larger base font size for readability */
 }
 
 body.dark-theme {
   background-color: #121212;
   color: #ffffff;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .modal {
@@ -25,6 +28,7 @@ body.dark-theme {
   align-items: center;
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
+  backdrop-filter: blur(8px); /* Adds a blur effect for a modern look */
 }
 
 .modal.display-block {
@@ -32,22 +36,22 @@ body.dark-theme {
 }
 
 .modal-content {
-  background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  width: 70%;
-  max-width: 700px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(to bottom right, #ffffff, #e0e7ff); /* Modern gradient background */
+  padding: 40px; /* Increased padding for a more substantial feel */
+  border-radius: 20px; /* More rounded corners for a modern look */
+  width: 75%;
+  max-width: 800px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Deeper shadow for depth */
   position: relative;
-  transform: translateY(-30px);
+  transform: translateY(-40px);
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   opacity: 0;
 }
 
 body.dark-theme .modal-content {
-  background-color: #333;
-  color: #fff;
-  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+  background: linear-gradient(to bottom right, #333, #444);
+  color: #ffffff;
+  box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1);
 }
 
 .display-block .modal-content {
@@ -61,10 +65,10 @@ body.dark-theme .modal-content {
 
 .close {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 24px;
-  font-weight: 500;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: 600;
   cursor: pointer;
   color: #ff5252;
   transition: color 0.3s;
@@ -85,47 +89,49 @@ body.dark-theme .close:hover {
 .tab-container {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #eee;
+  margin-bottom: 25px;
+  border-bottom: 3px solid #eee;
+  transition: border-color 0.3s ease;
 }
 
 body.dark-theme .tab-container {
-  border-bottom: 2px solid #555;
+  border-bottom: 3px solid #555;
 }
 
 .tab {
   cursor: pointer;
-  padding: 15px 20px;
+  padding: 20px 25px; /* Increased padding for a modern look */
   flex: 1;
   text-align: center;
-  border-bottom: 3px solid transparent;
-  transition: border-bottom 0.3s, color 0.3s;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  border-bottom: 4px solid transparent;
+  transition: border-bottom 0.3s ease, color 0.3s ease;
+  font-size: 20px; /* Larger font size for better readability */
+  font-weight: 700;
+  letter-spacing: 1px; /* Increased letter spacing for modern typography */
 }
 
 .tab:hover,
 .tab.active {
-  border-bottom: 3px solid #007bff;
+  border-bottom: 4px solid #007bff;
   color: #007bff;
 }
 
 body.dark-theme .tab:hover,
 body.dark-theme .tab.active {
   color: #82aaff;
-  border-bottom: 3px solid #82aaff;
+  border-bottom: 4px solid #82aaff;
 }
 
 .form-section {
   display: flex;
   flex-direction: column;
+  gap: 20px; /* More space between form elements */
 }
 
 .inputs {
   display: flex;
   justify-content: space-between;
-  gap: 15px;
+  gap: 25px; /* Increased gap for a modern layout */
 }
 
 .inputs .input-group {
@@ -135,33 +141,35 @@ body.dark-theme .tab.active {
 }
 
 .inputs .input-group label {
-  font-weight: 600;
-  margin-bottom: 5px;
-  letter-spacing: 0.3px;
+  font-weight: 700; /* Bold font for labels */
+  margin-bottom: 8px; /* Increased margin for spacing */
+  letter-spacing: 0.5px;
+  color: #444; /* Darker color for better contrast */
 }
 
 body.dark-theme .inputs .input-group label {
-  color: #ccc;
+  color: #bbb;
 }
 
-/* Modern design for date, category, and amount inputs */
 .inputs .input-group input,
 .inputs .input-group .flatpickr,
 .inputs .input-group select {
-  padding: 12px; /* Adjusted padding for a modern look */
-  font-size: 16px; /* Adjusted font size for a clean appearance */
-  border-radius: 8px; /* Modern rounded corners */
-  border: 1px solid #ccc; /* Subtle border */
+  padding: 16px; /* More padding for a modern, spacious feel */
+  font-size: 18px; /* Larger font size */
+  border-radius: 12px; /* Rounded corners for modern design */
+  border: 1px solid #ccc;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
-  background-color: #f9f9f9; /* Light background for a modern look */
+  background-color: #ffffff;
+  color: #333;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle inner shadow for depth */
 }
 
 body.dark-theme .inputs .input-group input,
 body.dark-theme .inputs .input-group .flatpickr,
 body.dark-theme .inputs .input-group select {
   background-color: #444;
-  color: #fff;
+  color: #ffffff;
   border-color: #555;
 }
 
@@ -170,70 +178,71 @@ body.dark-theme .inputs .input-group select {
 .inputs .input-group select:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 0 12px rgba(0, 123, 255, 0.3); /* Enhanced focus shadow */
 }
 
 body.dark-theme .inputs .input-group input:focus,
 body.dark-theme .inputs .input-group .flatpickr:focus,
 body.dark-theme .inputs .input-group select:focus {
   border-color: #82aaff;
-  box-shadow: 0 0 5px rgba(130, 170, 255, 0.3);
+  box-shadow: 0 0 12px rgba(130, 170, 255, 0.3);
 }
 
-/* Even smaller note box */
 .note-container textarea {
-  padding: 8px; /* Further decrease padding */
-  font-size: 12px; /* Smaller font size */
-  border-radius: 6px; /* Less rounded corners */
+  padding: 12px; /* Larger padding for comfort */
+  font-size: 14px; /* Slightly larger font for better readability */
+  border-radius: 10px; /* Rounded corners */
   border: 1px solid #ddd;
   width: 100%;
-  height: 60px; /* Further decrease the height */
+  height: 100px; /* Increased height for usability */
   resize: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 body.dark-theme .note-container textarea {
   background-color: #444;
-  color: #fff;
+  color: #ffffff;
   border-color: #555;
 }
 
 .note-container textarea:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
 
 body.dark-theme .note-container textarea:focus {
   border-color: #82aaff;
-  box-shadow: 0 0 5px rgba(130, 170, 255, 0.3);
+  box-shadow: 0 0 8px rgba(130, 170, 255, 0.3);
 }
 
 .icon-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-  margin-top: 20px;
+  gap: 20px; /* Increased gap for modern spacing */
+  margin-top: 30px;
 }
 
 .icon-item {
   background: linear-gradient(145deg, #e3f2fd, #bbdefb);
   text-align: center;
   cursor: pointer;
-  padding: 12px;
-  border-radius: 12px;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s, transform 0.3s;
+  padding: 18px; /* Larger padding for a substantial feel */
+  border-radius: 15px; /* More rounded for a modern style */
+  box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 body.dark-theme .icon-item {
   background: linear-gradient(145deg, #555, #444);
-  box-shadow: 4px 4px 10px rgba(255, 255, 255, 0.1);
+  box-shadow: 6px 6px 15px rgba(255, 255, 255, 0.1);
 }
 
 .icon-item:hover,
 .icon-item.selected {
   background: linear-gradient(145deg, #64b5f6, #2196f3);
-  transform: translateY(-5px);
+  transform: translateY(-10px); /* Pronounced lift effect */
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
 }
 
 body.dark-theme .icon-item:hover,
@@ -250,24 +259,24 @@ body.dark-theme .icon-item.selected {
 }
 
 .icon-item img {
-  width: 40px;
-  height: 40px;
+  width: 60px; /* Increased icon size for better visibility */
+  height: 60px;
 }
 
-upload-container {
-  margin-top: 20px;
+.upload-container {
+  margin-top: 25px;
 }
 
-file-label {
+.file-label {
   display: inline-block;
-  padding: 12px 20px;
+  padding: 15px 25px; /* Larger padding for modern buttons */
   background: #007bff;
   color: white;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.3s;
-  font-size: 14px;
-  font-weight: 500;
+  transition: background 0.3s, box-shadow 0.3s;
+  font-size: 16px; /* Larger font size for button text */
+  font-weight: 600; /* Bold text for emphasis */
 }
 
 body.dark-theme .file-label {
@@ -275,8 +284,9 @@ body.dark-theme .file-label {
   color: #333;
 }
 
-file-label:hover {
+.file-label:hover {
   background: #0056b3;
+  box-shadow: 0 6px 20px rgba(0, 86, 179, 0.3); /* Deeper shadow on hover */
 }
 
 body.dark-theme .file-label:hover {
@@ -286,22 +296,20 @@ body.dark-theme .file-label:hover {
 .save-container {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 25px;
 }
-
-
 
 #saveExpenseBtn,
 #saveIncomeBtn {
   background: #007bff;
   color: white;
-  padding: 15px ; /* Increase padding for larger buttons */
+  padding: 18px 30px; /* Increased padding for larger buttons */
   border: none;
-  border-radius: 10px; /* Slightly more rounded corners */
+  border-radius: 15px; /* Rounded corners for a modern button style */
   cursor: pointer;
-  transition: background 0.3s, color 0.3s;
-  font-size: 15px; /* Increase font size */
-  font-weight: 450; /* Make text bolder */
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  font-size: 18px; /* Larger font size */
+  font-weight: 600;
 }
 
 body.dark-theme #saveExpenseBtn,
@@ -313,7 +321,7 @@ body.dark-theme #saveIncomeBtn {
 #saveExpenseBtn:hover,
 #saveIncomeBtn:hover {
   background: #0056b3;
-  box-shadow: 0 0 10px rgba(0, 86, 179, 0.3); /* Add a slight shadow on hover */
+  box-shadow: 0 0 15px rgba(0, 86, 179, 0.3); /* Enhanced shadow on hover */
 }
 
 body.dark-theme #saveExpenseBtn:hover,
@@ -325,21 +333,20 @@ body.dark-theme #saveIncomeBtn:hover {
 .close-container {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 25px;
 }
-
 
 #closeExpenseBtn,
 #closeIncomeBtn {
   background: #007bff;
   color: white;
-  padding: 15px 25px; /* Increase padding for larger buttons */
+  padding: 18px 35px; /* Increased padding for larger buttons */
   border: none;
-  border-radius: 20px; /* Slightly more rounded corners */
+  border-radius: 20px; /* Rounded corners for a modern look */
   cursor: pointer;
-  transition: background 0.3s, color 0.3s;
-  font-size: 18px; /* Increase font size */
-  font-weight: 600; /* Make text bolder */
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  font-size: 20px; /* Larger font size */
+  font-weight: 700; /* Bolder font for a strong emphasis */
 }
 
 body.dark-theme #closeExpenseBtn,
@@ -351,7 +358,7 @@ body.dark-theme #closeIncomeBtn {
 #closeExpenseBtn:hover,
 #closeIncomeBtn:hover {
   background: #0056b3;
-  box-shadow: 0 0 10px rgba(0, 86, 179, 0.3); /* Add a slight shadow on hover */
+  box-shadow: 0 0 15px rgba(0, 86, 179, 0.3); /* Enhanced shadow on hover */
 }
 
 body.dark-theme #closeExpenseBtn:hover,
@@ -360,16 +367,16 @@ body.dark-theme #closeIncomeBtn:hover {
   color: #fff;
 }
 
-/* Table CSS */
 .MuiTableRow-root > * {
-  padding: 12px;
+  padding: 16px; /* Increased padding for table cells */
+  font-size: 18px; /* Larger font size for better readability */
 }
 
 .MuiTableRow-root.MuiTableRow-head > * {
   font-weight: bold !important;
   background-color: #e3f2fd;
   color: #333;
-  font-size: 15px;
+  font-size: 18px; /* Larger font size for table headers */
 }
 
 body.dark-theme .MuiTableRow-root.MuiTableRow-head > * {
@@ -380,24 +387,25 @@ body.dark-theme .MuiTableRow-root.MuiTableRow-head > * {
 .Table td,
 th {
   border: none !important;
-  padding: 15px;
+  padding: 18px; /* Increased padding for modern spacing */
   text-align: left;
   vertical-align: middle;
-  font-size: 15px;
-  letter-spacing: 0.3px;
+  font-size: 18px; /* Larger font size for better readability */
+  letter-spacing: 0.5px; /* Modern letter spacing */
 }
 
 .Table {
-  border-radius: 12px !important;
+  border-radius: 15px !important; /* Rounded corners for modern design */
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin: 20px;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Modern shadow for depth */
+  margin: 25px;
+  transition: box-shadow 0.3s ease; /* Smooth transition for shadow change */
 }
 
 body.dark-theme .Table {
   background-color: #333;
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
 }
 
 .Table th {
@@ -427,11 +435,15 @@ body.dark-theme .Table tr:hover {
 }
 
 .Table td .status {
-  padding: 8px;
-  border-radius: 9px;
+  padding: 10px;
+  border-radius: 10px;
   display: inline-block;
-  min-width: 80px;
+  min-width: 100px;
   text-align: center;
+  font-size: 16px; /* Larger font for status */
+  font-weight: 600;
+  background: linear-gradient(145deg, #f1f1f1, #e0e0e0); /* Gradient for modern look */
+  color: #333;
 }
 
 .scrollable-container {
@@ -443,8 +455,8 @@ body.dark-theme .Table tr:hover {
   color: #00b5ff !important;
   cursor: pointer;
   transition: color 0.3s ease;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px; /* Larger font size */
+  font-weight: 600; /* Bolder text for emphasis */
 }
 
 body.dark-theme .Details {
@@ -460,20 +472,24 @@ body.dark-theme .Details:hover {
 }
 
 .ButtonGroup button {
-  margin-right: 8px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  font-size: 15px;
-  font-weight: 500;
+  margin-right: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  font-size: 16px; /* Larger font size */
+  font-weight: 600; /* Bolder text for emphasis */
+  border-radius: 12px; /* Rounded button for a modern look */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow for modern feel */
 }
 
 .ButtonGroup button:hover {
   background-color: #6200ea;
   color: #fff;
+  transform: translateY(-5px); /* Lift effect on hover */
 }
 
 body.dark-theme .ButtonGroup button:hover {
   background-color: #82aaff;
   color: #fff;
+  transform: translateY(-5px); /* Lift effect on hover */
 }
 
 @media screen and (max-width: 1200px) {
@@ -494,7 +510,7 @@ body.dark-theme .ButtonGroup button:hover {
   .Table td {
     display: block;
     text-align: right;
-    font-size: 14px;
+    font-size: 16px; /* Larger font size for readability on smaller screens */
   }
 
   .Table th::after,
@@ -508,4 +524,3 @@ body.dark-theme .ButtonGroup button:hover {
     text-align: left;
   }
 }
-

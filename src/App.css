@@ -70,7 +70,7 @@ body.dark-theme {
 /* Theme Toggle Button Styles */
 .theme-toggle-container {
   position: absolute;
-  top: 20px;
+  top: 50px;
   right: 50px;
   z-index: 1000;
 }
