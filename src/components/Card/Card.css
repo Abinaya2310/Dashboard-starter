@@ -1,14 +1,3 @@
-.CompactCard {
-  display: flex;
-  flex: 1;
-  height: 7rem !important;
-  border-radius: 0.7rem;
-  color: white;
-  padding: 1rem;
-  position: relative;
-  cursor: pointer;
-  width: 70%; /* Reduced width to make the rectangle shorter */
-}
 
 .CompactCard:hover {
   box-shadow: none !important;

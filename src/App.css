@@ -1,14 +1,12 @@
 :root {
-  /* Light Theme Colors */
-  --primary-color: #3f51b5; /* A strong blue for primary elements */
-  --secondary-color: white;
-  --background-color: #87CEEB; /* Sky blue background */
-  --text-color: #333;
-  --header-background-color: #87CEEB; /* Sky blue header background */
-  --header-text-color: black;
-  --row-hover-color: #ADD8E6; /* Light blue for row hover color */
-  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  --border-radius: 12px;
+  --light-primary-color: #1a237e; 
+  --light-secondary-color: skyblue; /* Corrected: removed extra hyphen */
+  --light-background-color: #ffffff; /* Changed to white for light mode */
+  --light-text-color: #333333; /* Changed to dark color for text */
+  --light-header-background-color: #87CEEB; /* Light blue for header background */
+  --light-header-text-color: #000000; /* Black text for header */
+  --light-row-hover-color: #ADD8E6; /* Light blue for row hover */
+  --light-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow for light mode */
 
   /* Dark Theme Colors */
   --dark-primary-color: #1a237e;
@@ -22,14 +20,14 @@
 }
 
 body.light-theme {
-  --primary-color: #3f51b5;
-  --secondary-color: white;
-  --background-color: #87CEEB; /* Ensure sky blue background in light mode */
-  --text-color: #333;
-  --header-background-color: #87CEEB;
-  --header-text-color: black;
-  --row-hover-color: #ADD8E6;
-  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --primary-color: var(--light-primary-color);
+  --secondary-color: var(--light-secondary-color);
+  --background-color: var(--light-background-color);
+  --text-color: var(--light-text-color);
+  --header-background-color: var(--light-header-background-color);
+  --header-text-color: var(--light-header-text-color);
+  --row-hover-color: var(--light-row-hover-color);
+  --box-shadow: var(--light-box-shadow);
 }
 
 body.dark-theme {
@@ -43,10 +41,9 @@ body.dark-theme {
   --box-shadow: var(--dark-box-shadow);
 }
 
-
 .App {
   color: var(--text-color);
-  background: var(--background-color); /* Applies sky blue background in light mode */
+  background: var(--background-color);
   height: 100vh;
   display: flex;
   align-items: center;
@@ -62,7 +59,7 @@ body.dark-theme {
   background: var(--secondary-color);
   border-radius: 2rem;
   gap: 16px;
-  grid-template-columns: 20rem auto; /* Increased the width of the left-side table */
+  grid-template-columns: 20rem auto;
   overflow: hidden;
   box-shadow: var(--box-shadow);
 }
@@ -90,12 +87,12 @@ body.dark-theme {
 }
 
 .theme-toggle.light {
-  background-color: #ffecb3; /* Light theme color */
+  background-color: #ffecb3;
   color: #333;
 }
 
 .theme-toggle.dark {
-  background-color: #333; /* Dark theme color */
+  background-color: #333;
   color: #ffecb3;
 }
 
@@ -109,14 +106,13 @@ body.dark-theme {
 
 @media screen and (max-width: 1200px) {
   .AppGlass {
-    grid-template-columns: 35% 65%; /* Further increased the width of the left-side table for medium screens */
+    grid-template-columns: 35% 65%;
     overflow-y: scroll;
-  } 
+  }
 }
 
 @media screen and (max-width: 768px) {
   .AppGlass {
     grid-template-columns: 1fr;
-  } 
+  }
 }
-

@@ -1,5 +1,4 @@
 .MainDash {
-    /* padding-top: 1rem; */
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -12,14 +11,24 @@
     color: #333; /* Darker color for contrast */
     letter-spacing: 0.1rem; /* Space between letters for modern look */
     margin-bottom: 1rem; /* Margin below heading */
- 
 }
+
+/* Light Theme Styles for MainDash */
 body.light-theme .MainDash {
-    background-color: #87CEEB; /* Sky blue background for light theme */
+    background-color: #f0f8ff; /* Lighter background color for light mode (AliceBlue) */
     color: #333; /* Dark text color for contrast */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle box shadow for light theme */
 }
 
+body.light-theme .MainDash h1 {
+    color: #1a237e; /* Primary color for headings in light mode */
+}
 
+body.light-theme .MainDash h2 {
+    color: #3f51b5; /* Secondary color for subheadings in light mode */
+}
+
+/* Dark Theme Styles for MainDash */
 body.dark-theme .MainDash {
     background-color: var(--dark-background-color);
     color: var(--dark-text-color);
@@ -31,9 +40,10 @@ body.dark-theme .MainDash h1 {
 }
 
 body.dark-theme .MainDash h2 {
-    color: var(--dark-primary-color);
+    color: var(--dark-primary-color); /* Secondary color for subheadings in dark mode */
 }
 
+/* Media Queries */
 @media screen and (max-width: 1200px) {
     .MainDash {
         justify-content: flex-start;

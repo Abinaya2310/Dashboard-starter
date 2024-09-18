@@ -6,6 +6,16 @@
   transition: all 300ms ease;
   width: 16rem;
 }
+body.light-theme .Sidebar {
+  background-color: var(--header-background-color);
+  color: var(--header-text-color);
+  box-shadow: var(--box-shadow);
+}
+
+body.light-theme .Sidebar .menu-item:hover {
+  background-color: var(--row-hover-color);
+  color: var(--primary-color);
+}
 
 body.dark-theme .Sidebar {
   background-color: var(--dark-header-background-color);

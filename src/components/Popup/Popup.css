@@ -37,15 +37,197 @@ body.dark-theme {
 
 .modal-content {
   background: linear-gradient(to bottom right, #ffffff, #e0e7ff); /* Modern gradient background */
-  padding: 40px; /* Increased padding for a more substantial feel */
-  border-radius: 20px; /* More rounded corners for a modern look */
-  width: 75%;
+  padding: 30px; /* Adjust padding if needed */
+  border-radius: 20px; /* Rounded corners */
+  width: 75%; /* Keep the width as needed */
   max-width: 800px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Deeper shadow for depth */
+  max-height: 80%; /* Reduce the height of the modal */
+  overflow-y: auto; /* Allow scrolling if content overflows */
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Depth effect */
   position: relative;
-  transform: translateY(-40px);
+  transform: translateY(-30px); /* Adjust translate if needed */
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   opacity: 0;
+}
+
+.date-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Full width to match other containers */
+  margin-bottom: 20px; /* Margin for spacing */
+}
+
+.date-container label {
+  font-weight: bold;
+  margin-bottom: 8px; /* Space between label and input */
+  font-size: 19px; /* Font size for label */
+  color: black;
+}
+
+.date-container .flatpickr {
+  padding: 10px; /* Padding for the date input */
+  border-radius: 6px; /* Border radius for rounded corners */
+  border: 1px solid #ccc; /* Light border */
+  font-size: 14px; /* Smaller font size for the input */
+  width: 100%; /* Full width to match the layout */
+  background-color: #f9f9f9; /* Light background */
+  color: #333; /* Text color */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.date-container .flatpickr:focus {
+  border-color: #007bff; /* Blue border on focus */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2); /* Shadow on focus */
+  outline: none; /* Remove default outline */
+}
+
+/* Dark Theme */
+body.dark-theme .date-container .flatpickr {
+  background-color: #444; /* Dark background in dark mode */
+  color: #ffffff; /* Light text in dark mode */
+  border-color: #555; /* Darker border in dark mode */
+}
+
+body.dark-theme .date-container .flatpickr:focus {
+  border-color: #82aaff; /* Light blue border on focus in dark mode */
+  box-shadow: 0 0 8px rgba(130, 170, 255, 0.3); /* Focus shadow in dark mode */
+}
+
+
+.amount-container, .category-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Full width for both containers */
+  margin-bottom: 20px; /* Consistent margin */
+}
+
+.amount-container label, .category-container label {
+  font-weight: bold;
+  margin-bottom: 8px; /* Same space between label and input */
+  font-size: 19px; /* Same smaller font size */
+  color: black;
+}
+
+/* Amount Container: Make it smaller */
+.amount-container select, .amount-container input {
+  padding: 10px; /* Smaller padding for amount container */
+  border-radius: 6px; /* Slightly smaller border radius */
+  border: 1px solid #ccc;
+  font-size: 14px; /* Smaller font size for amount */
+  width: 100%; /* Full width */
+  background-color: #f9f9f9;
+  color: #333;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.amount-container select {
+  width: auto; /* Auto-sized select based on content */
+  margin-right: 10px; /* Space between select and input */
+}
+
+.amount-container input {
+  flex-grow: 1; /* Make input fill the remaining space */
+}
+
+/* Category Container: Keep it consistent with the amount container */
+.category-container input {
+  padding: 10px; /* Same smaller padding as the amount container */
+  border-radius: 6px; /* Smaller radius */
+  border: 1px solid #ccc;
+  font-size: 14px; /* Same smaller font size */
+  width: 100%; /* Full width */
+  background-color: black;
+  color: #333;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.amount-container select:focus, .amount-container input:focus,
+.category-container input:focus {
+  border-color: white;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2); /* Slightly reduced shadow */
+  border-color: black; /* Light border color */
+}
+
+.amount-container input::-webkit-inner-spin-button,
+.amount-container input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+  border-color: black; /* Light border color */
+}
+.note-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Full width to match other containers */
+  margin-bottom: 20px; /* Consistent margin for spacing */
+ 
+}
+.note-container label {
+  font-weight: bold;
+  margin-bottom: 8px; /* Space between label and textarea */
+  font-size: 19px; /* Font size for the label */
+  border-color: black; /* Light border color */
+
+}
+
+.note-container textarea {
+  padding: 8px; /* Smaller padding for the textarea */
+  border-radius: 6px; /* Rounded corners for modern design */
+  border: 1px solid #ccc; /* Light border */
+  font-size: 12px; /* Smaller font size for input text */
+  width: 100%; /* Full width */
+  height: 70px; /* Reduced height for the note textarea */
+  background-color: #f9f9f9; /* Light background */
+  color: #000; /* Black text in light mode */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+  resize: none; /* Disable resizing */
+}
+
+.note-container textarea:focus {
+  border-color: #007bff; /* Blue border on focus */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2); /* Shadow on focus */
+  outline: none; /* Remove default outline */
+}
+
+
+/* Light Mode for amount and category containers */
+body.light-theme .amount-container input,
+body.light-theme .category-container input {
+  background-color:white; /* Light background for inputs */
+  color: black; /* Black text for inputs */
+  border-color: black; /* Light border color */
+}
+
+body.light-theme .amount-container input:focus,
+body.light-theme .category-container input:focus {
+  border-color: #007bff; /* Blue border on focus */
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3); /* Blue shadow on focus */
+}
+
+/* Light Mode for modal content */
+body.light-theme .modal-content {
+  background: linear-gradient(to bottom right,white, black); /* Light gradient background */
+  color: #333333; /* Darker text color for contrast */
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+
+
+/* Dark Theme */
+body.dark-theme .amount-container input,
+body.dark-theme .category-container input {
+  background-color: #444;
+  color: #ffffff;
+  border-color: #555;
+}
+
+body.dark-theme .amount-container input:focus,
+body.dark-theme .category-container input:focus {
+  border-color: #82aaff;
+  box-shadow: 0 0 10px rgba(130, 170, 255, 0.3);
 }
 
 body.dark-theme .modal-content {
@@ -53,6 +235,7 @@ body.dark-theme .modal-content {
   color: #ffffff;
   box-shadow: 0 15px 40px rgba(255, 255, 255, 0.1);
 }
+
 
 .display-block .modal-content {
   transform: translateY(0);
@@ -227,12 +410,19 @@ body.dark-theme .note-container textarea:focus {
   background: linear-gradient(145deg, #e3f2fd, #bbdefb);
   text-align: center;
   cursor: pointer;
-  padding: 18px; /* Larger padding for a substantial feel */
+  padding: px; /* Larger padding for a substantial feel */
   border-radius: 15px; /* More rounded for a modern style */
   box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
   transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
+.icon-item span {
+  font-size: 1.5rem; /* Increases the size of the emoji */
+}
+
+.icon-item p {
+  font-size: 1.5rem; /* Increases the size of the name */
+}
 body.dark-theme .icon-item {
   background: linear-gradient(145deg, #555, #444);
   box-shadow: 6px 6px 15px rgba(255, 255, 255, 0.1);
@@ -259,9 +449,10 @@ body.dark-theme .icon-item.selected {
 }
 
 .icon-item img {
-  width: 60px; /* Increased icon size for better visibility */
-  height: 60px;
+  width: 100px; /* Further increased size */
+  height: 100px; /* Further increased size */
 }
+
 
 .upload-container {
   margin-top: 25px;
@@ -292,6 +483,21 @@ body.dark-theme .file-label {
 body.dark-theme .file-label:hover {
   background-color: #5271ff;
 }
+button {
+  padding: 10px 20px; /* Padding for a balanced button size */
+  background-color: #5271ff; /* Default button background color */
+  color: black; /* Text color */
+  border: none; /* Remove default border */
+  border-radius: 15px; /* Rounded corners */
+  font-size: 16px; /* Font size for readability */
+  cursor: pointer; /* Pointer cursor for interactive feel */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover/focus */
+  font-weight: bold; /* Bold text for emphasis */
+  text-transform: uppercase; /* Uppercase text for consistency */
+  letter-spacing: 1px; /* Letter spacing for modern typography */
+  margin: 5px; /* Add margin between buttons */
+}
+
 
 .save-container {
   display: flex;
@@ -301,7 +507,7 @@ body.dark-theme .file-label:hover {
 
 #saveExpenseBtn,
 #saveIncomeBtn {
-  background: #007bff;
+  background:  #5271ff;
   color: white;
   padding: 18px 30px; /* Increased padding for larger buttons */
   border: none;
@@ -374,7 +580,7 @@ body.dark-theme #closeIncomeBtn:hover {
 
 .MuiTableRow-root.MuiTableRow-head > * {
   font-weight: bold !important;
-  background-color: #e3f2fd;
+  background-color: #82aaff;
   color: #333;
   font-size: 18px; /* Larger font size for table headers */
 }

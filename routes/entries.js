@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Entry = require('../models/Entry');
-
+const AuditRecord=require('../models/AuditRecord');
 // GET all entries
 router.get('/', async (req, res) => {
   try {

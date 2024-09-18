@@ -166,6 +166,7 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
 
   const handleOpenPopup = () => {
     setShowPopup(true);
+    setEditRow(null); // Change: Ensure that on adding a new entry, `editRow` is reset to null
   };
 
   const handleClosePopup = () => {
@@ -426,7 +427,7 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
               <TableCell sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>ID</TableCell>
               <TableCell align="right" sx={{ width: '', padding: '8px', borderRight: '1px solid #ddd' }}>DATE</TableCell>
               <TableCell align="right" sx={{ width: '50px', padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
-              <TableCell align="right" sx={{ width: '30px', padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
+              <TableCell align="right" sx={{ width: '20px', padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
               <TableCell align="right" sx={{ width: '50px', padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
               <TableCell align="right" sx={{ width: '40px', padding: '8px', borderRight: '1px solid #ddd' }}>EXPENSE</TableCell>
               <TableCell align="right" sx={{ width: '40px', padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
