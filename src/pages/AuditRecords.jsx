@@ -1,16 +1,17 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
-const AuditRecords = () => {
-  const [records, setRecords] = useState([]);
+const AuditRecordsPage = () => {
+  const [auditRecords, setAuditRecords] = useState([]);
 
   useEffect(() => {
+    // Fetch audit records when the component loads
     const fetchAuditRecords = async () => {
       try {
-        const response = await axios.get('/api/audit-records'); // Ensure the route matches the backend
-        setRecords(response.data);
-      } catch (err) {
-        console.error('Error fetching audit records:', err);
+        const response = await axios.get('/api/audit-records'); // Ensure this matches your backend route
+        setAuditRecords(response.data); // Store audit records in state
+      } catch (error) {
+        console.error('Error fetching audit records:', error);
       }
     };
 
@@ -19,19 +20,17 @@ const AuditRecords = () => {
 
   return (
     <div>
-      <h1>Audit Records</h1>
-      <div>
-        {records.length > 0 ? (
-          records.map((record, index) => (
-            <p key={index}>{record.message}</p>
-          ))
-        ) : (
-          <p>No audit records available.</p>
-        )}
-      </div>
+      <h2>Audit Records</h2>
+      <ul>
+        {auditRecords.map((record) => (
+          <li key={record._id}>{record.sentence}</li> // Render each audit sentence
+        ))}
+      </ul>
     </div>
   );
 };
 
-export default AuditRecords;
+export default AuditRecordsPage;
+
+
 

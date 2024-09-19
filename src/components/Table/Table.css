@@ -148,6 +148,48 @@ body.dark-theme .Table tr:hover td {
   background-color: var(--primary-color);
   color: #fff;
 }
+.searchQuery {
+  margin-top: 0px;
+  margin-right: 10px;
+  padding: 6px; /* Reduced padding to make the box smaller */
+  font-size: 1.2rem; /* Reduced font size for a smaller appearance */
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  color: #333; /* Light mode text color */
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* searchQuery in focus */
+.searchQuery:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+}
+
+/* Light Theme Styles for searchQuery */
+body.light-theme .searchQuery {
+  background-color: skyblue; /* Lighter background for light mode */
+  color: #333; /* Darker text color for light mode */
+  border: 1px solid #aaa; /* Light grey border */
+}
+
+body.light-theme .searchQuery:focus {
+  border-color: #3f51b5; /* Custom primary color for focus in light mode */
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+}
+
+/* Dark Theme Styles for searchQuery */
+body.dark-theme .searchQuery {
+  background-color: var(--dark-grey-color); /* Dark grey background for dark mode */
+  color: var(--dark-text-color); /* Lighter text color for dark mode */
+  border: 1px solid var(--dark-text-color); /* Dark text color as border */
+}
+
+body.dark-theme .searchQuery:focus {
+  border-color: var(--primary-dark-color); /* Custom primary color for dark mode */
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Lighter shadow for dark mode */
+}
 
 /* Default SortBox Styles */
 .SortBox {
@@ -246,7 +288,6 @@ body.dark-theme .AddNewEntryButton:focus {
   background-color: skyblue !important;
   color: var(--text-color) !important;
 }
-body.light-theme .Table {
-  border: 2px solid black !important; /* Force black border to be applied */
-}
+
+
 

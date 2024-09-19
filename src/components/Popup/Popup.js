@@ -41,7 +41,7 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
       const category = activeTab === 'income' ? selectedIncomeCategory : selectedExpenseCategory;
 
@@ -63,7 +63,9 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
         note, // Add note to the data
       };
 
-      addData(updatedData);
+      // Check if we're editing or adding a new entry
+      await addData(updatedData, !!editRow); // Pass 'true' if editing, 'false' if adding
+
       handleClose();
     } catch (error) {
       console.error('Error in handleSave:', error.message);
@@ -137,7 +139,10 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
                 <div className="date-container">
                   <label htmlFor="expenseDate">Date</label>
                   <Flatpickr
-                    options={{ dateFormat: 'Y-m-d' }}
+                    options={{
+                      dateFormat: 'Y-m-d',
+                      maxDate: new Date() // This will disable future dates
+                    }}
                     className="flatpickr small-date"
                     value={date}
                     onChange={([date]) => setDate(date)}
@@ -173,6 +178,7 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
                   />
                 </div>
               </div>
+              <p style={{ fontWeight: 'bold', marginTop: '10px', marginBottom: '10px', fontsize: '18px' }}>Select a category below:</p>
               <div className="icon-grid" id="expenseIconSelection">
                 {categories.expense.map((category) => (
                   <div
@@ -197,10 +203,14 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
                 <div className="date-container">
                   <label htmlFor="incomeDate">Date</label>
                   <Flatpickr
-                    options={{ dateFormat: 'Y-m-d' }}
+                    options={{
+                      dateFormat: 'Y-m-d',
+                      maxDate: new Date(), // Dynamically sets today as the max date
+                      disableMobile: true // Optional: Disable mobile native date picker to ensure Flatpickr is used
+                    }}
                     className="flatpickr small-date"
                     value={date}
-                    onChange={([date]) => setDate(date)}
+                    onChange={([selectedDate]) => setDate(selectedDate)}
                     required
                   />
                 </div>
@@ -233,6 +243,7 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
                   />
                 </div>
               </div>
+              <p style={{ fontWeight: 'bold', marginTop: '10px', marginBottom: '10px', fontSize: '20px' }}>Select a category below:</p>
               <div className="icon-grid" id="incomeIconSelection">
                 {categories.income.map((category) => (
                   <div
@@ -258,3 +269,4 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
 };
 
 export default Popup;
+

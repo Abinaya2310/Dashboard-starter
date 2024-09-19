@@ -1,10 +1,11 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import GetAppIcon from '@mui/icons-material/GetApp';
+import SearchIcon from '@mui/icons-material/Search'; // Import modern search icon
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Alert,
-  Box, // Importing Box component for flexbox layout
+  Box,
   Button,
   Card,
   CardContent,
@@ -13,14 +14,16 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  InputAdornment, // Replaced input with MUI TextField
   Table as MuiTable,
   Paper,
-  Snackbar, // Renamed the imported Table to MuiTable
+  Snackbar,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
+  TableRow, // Added for the search icon placement
+  TextField,
   Typography
 } from '@mui/material';
 import axios from 'axios';
@@ -30,10 +33,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import Popup from '../Popup/Popup';
 import './Table.css';
 
-export default function CustomTable() {  // Renamed the component to 'CustomTable'
+export default function CustomTable() {
   const [data, setData] = useState([]);
-  const [totalIncome, setTotalIncome] = useState(0); // State for total income based on filter
-  const [totalExpense, setTotalExpense] = useState(0); // State for total expense based on filter
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [editRow, setEditRow] = useState(null);
   const [viewRow, setViewRow] = useState(null);
@@ -43,6 +46,7 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
   const [successMessage, setSuccessMessage] = useState('');
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
   const [sortCriteria, setSortCriteria] = useState('');
+  const [searchQuery, setSearchQuery] = useState(''); // State for search query
 
   const newRowRef = useRef(null);
 
@@ -55,7 +59,7 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
       const response = await axios.get('http://localhost:3000/api/entries');
       if (response.status === 200) {
         setData(response.data);
-        calculateTotals(response.data); // Calculate total income and expense on initial load
+        calculateTotals(response.data);
       } else {
         console.error('Failed to fetch data:', response.statusText);
       }
@@ -79,7 +83,7 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
       }, 100);
 
       setSuccessMessage('Entry added successfully!');
-      calculateTotals([response.data, ...data]); // Recalculate totals after adding an entry
+      calculateTotals([response.data, ...data]);
     } catch (error) {
       console.error('Error adding data', error);
     }
@@ -91,7 +95,7 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
       if (response.status === 200) {
         setData((prevData) => prevData.map((row) => (row.id === updatedData.id ? updatedData : row)));
         setSuccessMessage('Entry updated successfully!');
-        calculateTotals(data.map((row) => (row.id === updatedData.id ? updatedData : row))); // Recalculate totals after updating an entry
+        calculateTotals(data.map((row) => (row.id === updatedData.id ? updatedData : row)));
       }
     } catch (error) {
       console.error('Error updating data', error);
@@ -103,7 +107,7 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
       await axios.delete(`http://localhost:3000/api/entries/${id}`);
       setData((prevData) => prevData.filter((row) => row.id !== id));
       setDeleteSuccessMessage('Entry deleted successfully!');
-      calculateTotals(data.filter((row) => row.id !== id)); // Recalculate totals after deleting an entry
+      calculateTotals(data.filter((row) => row.id !== id));
     } catch (error) {
       console.error('Error deleting data', error);
     }
@@ -111,62 +115,42 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
 
   const handleDownload = (row) => {
     const doc = new jsPDF();
-
-    // Set font size and style
     doc.setFontSize(12);
-    doc.setFont("Times-Roman", "bold"); // Changed font to Times-Roman
+    doc.setFont("Times-Roman", "bold");
 
     const lineHeight = 10;
     const startX = 10;
     let currentY = 10;
 
-    // Function to add text with a label and value, ensuring all values are strings
     const addTextWithLabel = (label, value, yPosition) => {
       doc.text(label, startX, yPosition);
-      doc.setFont("Times-Roman", "normal"); // Regular font for values
-      doc.text(String(value), startX + 50, yPosition); // Convert value to string
-      doc.setFont("Times-Roman", "bold"); // Bold font for the next label
+      doc.setFont("Times-Roman", "normal");
+      doc.text(String(value), startX + 50, yPosition);
+      doc.setFont("Times-Roman", "bold");
     };
 
-    // Add text with improved alignment and styling
     addTextWithLabel("ID:", row.id ? String(row.id) : 'N/A', currentY);
-
     currentY += lineHeight;
     addTextWithLabel("Date:", row.date ? String(row.date.split(", ")[0]) : "N/A", currentY);
-
     currentY += lineHeight;
-    addTextWithLabel(
-      "Time:",
-      row.date ? (row.date.split(", ")[1] ? String(row.date.split(", ")[1]) : "N/A") : "N/A",
-      currentY
-    );
-
+    addTextWithLabel("Time:", row.date ? (row.date.split(", ")[1] ? String(row.date.split(", ")[1]) : "N/A") : "N/A", currentY);
     currentY += lineHeight;
     addTextWithLabel("Category:", row.category ? String(row.category) : 'N/A', currentY);
-
     currentY += lineHeight;
     addTextWithLabel("Note:", row.note ? String(row.note) : 'N/A', currentY);
-
     currentY += lineHeight;
     addTextWithLabel("Expense:", row.expense ? String(row.expense) : "-", currentY);
-
     currentY += lineHeight;
     addTextWithLabel("Income:", row.income ? String(row.income) : "-", currentY);
-
     currentY += lineHeight;
-    addTextWithLabel(
-      "Amount:",
-      `${row.currency === "USD" ? "$" : "₹"} ${row.amount ? String(row.amount) : '0'}`,
-      currentY
-    );
+    addTextWithLabel("Amount:", `${row.currency === "USD" ? "$" : "₹"} ${row.amount ? String(row.amount) : '0'}`, currentY);
 
-    // Save the PDF
     doc.save(`entry-${row.id}.pdf`);
   };
 
   const handleOpenPopup = () => {
     setShowPopup(true);
-    setEditRow(null); // Change: Ensure that on adding a new entry, `editRow` is reset to null
+    setEditRow(null);
   };
 
   const handleClosePopup = () => {
@@ -215,27 +199,25 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
 
   const calculateTotals = (filteredData) => {
     const totalIncome = filteredData.reduce((sum, row) => {
-      const incomeStr = row.income?.trim(); // Trim whitespace
-      const income = parseFloat(incomeStr.replace(/[^0-9.-]+/g, '')); // Remove non-numeric characters and convert to float
-      if (!isNaN(income) && incomeStr !== '-' && income > 0) {  // Exclude invalid or '-' values and negative numbers
+      const incomeStr = row.income?.trim();
+      const income = parseFloat(incomeStr.replace(/[^0-9.-]+/g, ''));
+      if (!isNaN(income) && incomeStr !== '-' && income > 0) {
         return sum + income;
       }
       return sum;
     }, 0);
 
     const totalExpense = filteredData.reduce((sum, row) => {
-      const expenseStr = row.expense?.trim(); // Trim whitespace
-      const expense = parseFloat(expenseStr.replace(/[^0-9.-]+/g, '')); // Remove non-numeric characters and convert to float
-      if (!isNaN(expense) && expenseStr !== '-' && expense > 0) {  // Exclude invalid or '-' values and negative numbers
+      const expenseStr = row.expense?.trim();
+      const expense = parseFloat(expenseStr.replace(/[^0-9.-]+/g, ''));
+      if (!isNaN(expense) && expenseStr !== '-' && expense > 0) {
         return sum + expense;
       }
       return sum;
     }, 0);
-    
-    console.log('Calculated Total Income:', totalIncome); // Debugging log
-    console.log('Calculated Total Expense:', totalExpense); // Debugging log
-    setTotalIncome(totalIncome); // Update state with the calculated total income
-    setTotalExpense(totalExpense); // Update state with the calculated total expense
+
+    setTotalIncome(totalIncome);
+    setTotalExpense(totalExpense);
   };
 
   const handleSortChange = async (e) => {
@@ -251,23 +233,14 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
         if (criteria === 'today') {
           sortedData = sortedData.filter((row) => {
             const rowDate = new Date(row.date.split(', ')[0]);
-            return (
-              rowDate.getDate() === now.getDate() &&
-              rowDate.getMonth() === now.getMonth() &&
-              rowDate.getFullYear() === now.getFullYear()
-            );
+            return rowDate.getDate() === now.getDate() && rowDate.getMonth() === now.getMonth() && rowDate.getFullYear() === now.getFullYear();
           });
         } else if (criteria === 'yesterday') {
           const yesterday = new Date(now);
           yesterday.setDate(now.getDate() - 1);
-
           sortedData = sortedData.filter((row) => {
             const rowDate = new Date(row.date.split(', ')[0]);
-            return (
-              rowDate.getDate() === yesterday.getDate() &&
-              rowDate.getMonth() === yesterday.getMonth() &&
-              rowDate.getFullYear() === yesterday.getFullYear()
-            );
+            return rowDate.getDate() === yesterday.getDate() && rowDate.getMonth() === yesterday.getMonth() && rowDate.getFullYear() === yesterday.getFullYear();
           });
         } else if (criteria === 'last7days') {
           sortedData = sortedData.filter((row) => {
@@ -291,8 +264,6 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
           sortedData = [...response.data];
         }
 
-        console.log('Sorted Data:', sortedData);
-
         calculateTotals(sortedData);
         setData(sortedData);
       } else {
@@ -303,7 +274,6 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
     }
   };
 
-  // New function to handle downloading sorted data
   const handleDownloadSortedData = () => {
     if (data.length === 0) {
       console.error('No data available to download.');
@@ -311,10 +281,8 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
     }
 
     const headers = ['ID', 'Date', 'Time', 'Category', 'Note', 'Expense', 'Income', 'Amount'];
-    
-    // Ensure all values are correctly formatted as strings to prevent any ID visibility issues
     const csvRows = data.map(row => [
-      row.id !== undefined ? String(row.id) : 'N/A', // Ensure ID is a string
+      row.id !== undefined ? String(row.id) : 'N/A',
       row.date ? row.date.split(', ')[0] : 'N/A',
       row.date ? (row.date.split(', ')[1] ? String(row.date.split(', ')[1]) : "N/A") : "N/A",
       row.category ? String(row.category) : '-',
@@ -324,13 +292,9 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
       `${row.currency === 'USD' ? '$' : '₹'} ${row.amount ? String(row.amount) : '0'}`
     ]);
 
-    // Combine headers and rows
     const csvContent = [headers, ...csvRows].map(e => e.join(",")).join("\n");
-
-    // Add UTF-8 BOM to ensure proper encoding for special characters
     const csvWithBom = "\uFEFF" + csvContent;
 
-    // Create a Blob and download it
     const blob = new Blob([csvWithBom], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -341,60 +305,76 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
     document.body.removeChild(link);
   };
 
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredData = data.filter((row) =>
+    (row.id !== undefined && row.id.toString().includes(searchQuery)) ||
+    (row.category && row.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (row.note && row.note.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   return (
     <div className="TableContainer">
       <div className="Header">
         <h3>Money Tracker</h3>
       </div>
 
-      {/* Flex container to align the cards side by side */}
-      <Box sx={{ display: 'flex', gap: 2, marginBottom: 2 }}> 
-        {/* Total Income Card */}
-        <Card
-          sx={{
-            width: 180, // Reduced width for a smaller box size
-            height: 100, // Reduced height for a compact look
-            padding: 1, // Slight padding to fit content nicely
-            borderRadius: '12px', // Rounded corners for a modern look
-            background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', // Gradient background
-            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
-            color: 'white', // White text color for contrast
-          }}
-        >
+      <Box sx={{ display: 'flex', gap: 2, marginBottom: 2 }}>
+        <Card sx={{
+          width: 180, height: 100, padding: 1, borderRadius: '12px', background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', color: 'white',
+        }}>
           <CardContent>
-            <Typography sx={{ fontSize: 18, fontWeight: 'bold' }} gutterBottom>
-              Total Income
-            </Typography>
-            <Typography variant="h6" component="div">
-              ₹ {totalIncome.toLocaleString()} {/* Include rupees symbol */}
-            </Typography>
+            <Typography sx={{ fontSize: 18, fontWeight: 'bold' }} gutterBottom>Total Income</Typography>
+            <Typography variant="h6">₹ {totalIncome.toLocaleString()}</Typography>
           </CardContent>
         </Card>
 
-        {/* Total Expense Card */}
-        <Card
-          sx={{
-            width: 180, // Reduced width for a smaller box size
-            height: 100, // Reduced height for a compact look
-            padding: 1, // Slight padding to fit content nicely
-            borderRadius: '12px', // Rounded corners for a modern look
-            background: 'linear-gradient(135deg, #ff9a9e 0%, #ff6a88 100%)', // Gradient in shades of pink
-            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
-            color: 'white', // White text color for contrast
-          }}
-        >
+        <Card sx={{
+          width: 180, height: 100, padding: 1, borderRadius: '12px', background: 'linear-gradient(135deg, #ff9a9e 0%, #ff6a88 100%)', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', color: 'white',
+        }}>
           <CardContent>
-            <Typography sx={{ fontSize: 18, fontWeight: 'bold' }} gutterBottom>
-              Total Expense
-            </Typography>
-            <Typography variant="h6" component="div">
-              ₹ {totalExpense.toLocaleString()} {/* Include rupees symbol */}
-            </Typography>
+            <Typography sx={{ fontSize: 18, fontWeight: 'bold' }} gutterBottom>Total Expense</Typography>
+            <Typography variant="h6">₹ {totalExpense.toLocaleString()}</Typography>
           </CardContent>
         </Card>
       </Box>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
+  <TextField
+    value={searchQuery}
+    onChange={handleSearch}
+    placeholder="Search"
+    variant="outlined"
+    size="small"
+    sx={{
+      marginRight: '4px',
+      backgroundColor: 'background.paper', // Material-UI's theme-based background color
+      color: 'text.primary', // Adjust text color based on the theme
+      '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+          borderColor: 'text.primary', // Border color adapts to theme
+        },
+        '&:hover fieldset': {
+          borderColor: 'primary.main', // Primary color for hover
+        },
+        '&.Mui-focused fieldset': {
+          borderColor: 'primary.main', // Primary color when focused
+        },
+      },
+    }}
+    InputProps={{
+      startAdornment: (
+        <InputAdornment position="start">
+          <SearchIcon />
+        </InputAdornment>
+      ),
+    }}
+  />
+
+
+
         <select value={sortCriteria} onChange={handleSortChange} className="SortBox" style={{ marginRight: '10px' }}>
           <option value="">Sort By</option>
           <option value="all">All</option>
@@ -405,19 +385,8 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
           <option value="last1year">Last 1 Year</option>
         </select>
 
-        {/* New Download Button */}
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleDownloadSortedData}
-          style={{ marginRight: '10px' }}
-        >
-          Download
-        </Button>
-
-        <Button variant="contained" color="primary" onClick={handleOpenPopup} className="AddNewEntryButton">
-          Add New Entry
-        </Button>
+        <Button variant="contained" color="secondary" onClick={handleDownloadSortedData} style={{ marginRight: '10px' }}>Download</Button>
+        <Button variant="contained" color="primary" onClick={handleOpenPopup} className="AddNewEntryButton">Add New Entry</Button>
       </div>
 
       <div className="TableHeader">
@@ -425,14 +394,14 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
           <TableHead>
             <TableRow>
               <TableCell sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>ID</TableCell>
-              <TableCell align="right" sx={{ width: '', padding: '8px', borderRight: '1px solid #ddd' }}>DATE</TableCell>
-              <TableCell align="right" sx={{ width: '50px', padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
-              <TableCell align="right" sx={{ width: '20px', padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
-              <TableCell align="right" sx={{ width: '50px', padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
-              <TableCell align="right" sx={{ width: '40px', padding: '8px', borderRight: '1px solid #ddd' }}>EXPENSE</TableCell>
-              <TableCell align="right" sx={{ width: '40px', padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
-              <TableCell align="right" sx={{ width: '60px', padding: '8px', borderRight: '1px solid #ddd' }}>AMOUNT</TableCell>
-              <TableCell align="right" sx={{ width: '100px', padding: '8px', borderRight: 'none' }} className="actions-header">ACTIONS</TableCell>
+              <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>DATE</TableCell>
+              <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
+              <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
+              <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
+              <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>EXPENSE</TableCell>
+              <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
+              <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>AMOUNT</TableCell>
+              <TableCell align="right" sx={{ padding: '8px', borderRight: 'none' }}>ACTIONS</TableCell>
             </TableRow>
           </TableHead>
         </MuiTable>
@@ -442,7 +411,7 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
         <TableContainer component={Paper}>
           <MuiTable>
             <TableBody>
-              {data.map((row) => (
+              {filteredData.map((row) => (
                 <motion.tr
                   key={row.id}
                   initial={{ opacity: 0 }}
@@ -461,7 +430,7 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
                   <TableCell align="left">{row.expense ? row.expense : '-'}</TableCell>
                   <TableCell align="left">{row.income ? row.income : '-'}</TableCell>
                   <TableCell align="left">{row.currency === 'USD' ? '$' : '₹'} {row.amount}</TableCell>
-                  <TableCell align="left" className="actions-cell">
+                  <TableCell align="left">
                     <IconButton color="info" size="small" style={{ marginRight: 8 }} onClick={() => handleView(row)}>
                       <VisibilityIcon />
                     </IconButton>
@@ -495,46 +464,37 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
         <Dialog
           open={Boolean(viewRow)}
           onClose={handleCloseView}
-          maxWidth="md" // Sets the maximum width of the dialog to medium
-          fullWidth // Makes the dialog take full width up to the maxWidth
+          maxWidth="md"
+          fullWidth
           PaperProps={{
             style: {
-              borderRadius: '20px', // More rounded corners for a sleek look
-              padding: '30px', // Adds generous padding inside the dialog
-              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.2)', // Deeper shadow for a modern, floating effect
-              backgroundImage: 'linear-gradient(135deg, #e0f7fa, #ffebee)', // Gradient background with stylish colors
+              borderRadius: '20px',
+              padding: '30px',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.2)',
+              backgroundImage: 'linear-gradient(135deg, #e0f7fa, #ffebee)',
             },
           }}
         >
-          <DialogTitle
-            style={{
-              fontSize: '1.8rem', // Larger font size for the title
-              fontWeight: '600', // Semi-bold font for a modern look
-              color: '#ff6f61', // A vibrant color for the title text
-              textAlign: 'center', // Center align the title text
-              marginBottom: '15px', // Adds space below the title
-              textTransform: 'uppercase', // Uppercase styling for a bold statement
-              letterSpacing: '1.5px', // Adds letter spacing for modern typography
-            }}
-          >
+          <DialogTitle style={{
+            fontSize: '1.8rem',
+            fontWeight: '600',
+            color: '#ff6f61',
+            textAlign: 'center',
+            marginBottom: '15px',
+            textTransform: 'uppercase',
+            letterSpacing: '1.5px',
+          }}>
             View Entry
           </DialogTitle>
-          <DialogContent
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '15px', // Adds more space between each row for better readability
-              fontSize: '1.3rem', // Slightly larger font for the content
-              color: '#555', // Softer text color for a modern feel
-              padding: '0 20px', // Padding for the table content
-            }}
-          >
-            <table
-              style={{
-                width: '100%',
-                borderCollapse: 'collapse', // Collapses the borders for a clean table look
-              }}
-            >
+          <DialogContent style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '15px',
+            fontSize: '1.3rem',
+            color: '#555',
+            padding: '0 20px',
+          }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <tbody>
                 <tr>
                   <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>ID:</td>
@@ -571,25 +531,16 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
               </tbody>
             </table>
           </DialogContent>
-          <DialogActions
-            style={{
-              justifyContent: 'center', // Center-align the buttons
-              paddingTop: '20px', // Adds more padding at the top for spacing
-            }}
-          >
-            <Button
-              onClick={handleCloseView}
-              variant="contained"
-              style={{
-                backgroundColor: '#00796b', // Vibrant color for the button
-                color: 'white',
-                borderRadius: '20px', // More rounded button for a modern look
-                padding: '10px 20px', // Padding for button size
-                textTransform: 'none', // Keeps the button text in sentence case
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)', // Button shadow for depth
-                fontWeight: 'bold', // Bold text for emphasis
-              }}
-            >
+          <DialogActions style={{ justifyContent: 'center', paddingTop: '20px' }}>
+            <Button onClick={handleCloseView} variant="contained" style={{
+              backgroundColor: '#00796b',
+              color: 'white',
+              borderRadius: '20px',
+              padding: '10px 20px',
+              textTransform: 'none',
+              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+              fontWeight: 'bold',
+            }}>
               Close
             </Button>
           </DialogActions>
@@ -602,25 +553,17 @@ export default function CustomTable() {  // Renamed the component to 'CustomTabl
           <p>Are you sure you want to delete this entry?</p>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirmDelete} color="secondary">
-            Delete
-          </Button>
+          <Button onClick={handleCancelDelete} color="primary">Cancel</Button>
+          <Button onClick={handleConfirmDelete} color="secondary">Delete</Button>
         </DialogActions>
       </Dialog>
 
       <Snackbar open={Boolean(successMessage)} autoHideDuration={3000} onClose={handleCloseSuccessMessage}>
-        <Alert onClose={handleCloseSuccessMessage} severity="success" sx={{ width: '100%' }}>
-          {successMessage}
-        </Alert>
+        <Alert onClose={handleCloseSuccessMessage} severity="success" sx={{ width: '100%' }}>{successMessage}</Alert>
       </Snackbar>
 
       <Snackbar open={Boolean(deleteSuccessMessage)} autoHideDuration={3000} onClose={() => setDeleteSuccessMessage('')}>
-        <Alert onClose={() => setDeleteSuccessMessage('')} severity="success" sx={{ width: '100%' }}>
-          {deleteSuccessMessage}
-        </Alert>
+        <Alert onClose={() => setDeleteSuccessMessage('')} severity="success" sx={{ width: '100%' }}>{deleteSuccessMessage}</Alert>
       </Snackbar>
     </div>
   );

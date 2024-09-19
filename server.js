@@ -5,7 +5,7 @@ const cors = require('cors');
 const Entry = require('./models/Entry'); // Import the Entry model
 
 const app = express();
-
+const auditRecordsRouter = require('./models/AuditRecord'); // Adjust the path accordingly
 // Connect to MongoDB
 connectDB();
 
@@ -15,7 +15,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/entries', require('./routes/entries'));
-
+app.use('/api/entries', require('./routes/entries'));
 // New route to calculate total income and expense
 app.get('/api/total', async (req, res) => {
   try {
@@ -37,6 +37,10 @@ app.get('/api/total', async (req, res) => {
     res.status(500).json({ error: 'An error occurred' });
   }
 });
+
+
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
