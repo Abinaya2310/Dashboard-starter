@@ -10,7 +10,6 @@ import Customers from './pages/Customers';
 import Profile from './pages/Profile';
 import SettingsPage from './pages/SettingsPage.jsx';
 import ToDoList from './pages/ToDoList';
-
 function App() {
   const [darkMode, setDarkMode] = useState(false);
 

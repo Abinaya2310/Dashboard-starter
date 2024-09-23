@@ -3,13 +3,13 @@ const router = express.Router();
 const Entry = require('../models/Entry');
 const AuditRecord = require('../models/AuditRecord');
 
-// GET all entries
+// GET all entries from MongoDB
 router.get('/', async (req, res) => {
   try {
-    const entries = await Entry.find();
-    res.json(entries);
+    const entries = await Entry.find(); // Fetch all entries from MongoDB
+    res.json(entries); // Send entries back to client as JSON
   } catch (err) {
-    res.status(500).send('Server Error');
+    res.status(500).send('Server Error'); // Handle any errors
   }
 });
 
@@ -31,7 +31,12 @@ router.post('/', async (req, res) => {
 
     // Create an audit record
     const newAuditRecord = new AuditRecord({
- 
+      id,
+      date,
+      category,
+      amount: parseFloat(amount),
+      type: categoryType,
+      note,
       sentence: auditMessage
     });
 
@@ -63,7 +68,12 @@ router.put('/:id', async (req, res) => {
     // Create an audit record for the update
     const auditMessage = `This ID has updated an entry for INR ${amount} (${expense ? 'expense' : 'income'}) under ${category} category on ${date}. ${note !== '-' ? `Note: ${note}` : 'No note added.'}`;
     const newAuditRecord = new AuditRecord({
-    
+      id,
+      date,
+      category,
+      amount,
+      type: expense ? 'expense' : 'income',
+      note,
       sentence: auditMessage
     });
 
@@ -88,7 +98,12 @@ router.delete('/:id', async (req, res) => {
     // Create an audit record for the deletion
     const auditMessage = `This ID has deleted an entry for INR ${entry.amount} (${entry.expense ? 'expense' : 'income'}) under ${entry.category} category on ${entry.date}.`;
     const newAuditRecord = new AuditRecord({
-    
+      id: entry.id,
+      date: entry.date,
+      category: entry.category,
+      amount: entry.amount,
+      type: entry.expense ? 'expense' : 'income',
+      note: entry.note,
       sentence: auditMessage
     });
 
@@ -101,16 +116,6 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Route to get all audit records
-router.get('/audit-records', async (req, res) => {
-  try {
-    const records = await AuditRecord.find();
-    console.log(records); // Log records to ensure data is retrieved
-    res.json(records);
-  } catch (error) {
-    console.error('Error fetching audit records:', error);
-    res.status(500).json({ message: 'Error fetching audit records' });
-  }
-});
+
 module.exports = router;
 

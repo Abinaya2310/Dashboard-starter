@@ -5,7 +5,7 @@ const cors = require('cors');
 const Entry = require('./models/Entry'); // Import the Entry model
 
 const app = express();
-const auditRecordsRouter = require('./models/AuditRecord'); // Adjust the path accordingly
+const auditRecordRoutes = require('./routes/auditrecords'); // AuditRecord route
 // Connect to MongoDB
 connectDB();
 
@@ -15,7 +15,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/entries', require('./routes/entries'));
-app.use('/api/entries', require('./routes/entries'));
+app.use('/api/auditrecords', auditRecordRoutes); // AuditRecord-related API
 // New route to calculate total income and expense
 app.get('/api/total', async (req, res) => {
   try {

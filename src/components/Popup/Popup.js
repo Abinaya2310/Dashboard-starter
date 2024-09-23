@@ -29,6 +29,11 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
     }
   }, [editRow]);
 
+
+
+
+  
+
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -41,37 +46,42 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
     }
   };
 
+
+
+
+
+  
   const handleSave = async () => {
     try {
       const category = activeTab === 'income' ? selectedIncomeCategory : selectedExpenseCategory;
-
-      // Validate required fields
-      if (!category) {
-        throw new Error('Category is required');
+      if (!category || !amount || isNaN(amount)) {
+        throw new Error('All fields are required.');
       }
-      if (!amount || isNaN(amount)) {
-        throw new Error('A valid amount is required');
-      }
-
+  
+      const currentDateTime = new Date();
+      const dateString = currentDateTime.toLocaleDateString();
+      const timeString = currentDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
       const updatedData = {
         id: editRow ? editRow.id : Date.now(),
-        date: date.toLocaleDateString(),
+        date: dateString,
+        time: timeString, // Always update the time to the current time
         category,
         expense: activeTab === 'expense' ? `${currency} ${amount}` : '',
         income: activeTab === 'income' ? `${currency} ${amount}` : '',
         amount: parseFloat(amount),
-        note, // Add note to the data
+        note,
       };
-
-      // Check if we're editing or adding a new entry
-      await addData(updatedData, !!editRow); // Pass 'true' if editing, 'false' if adding
-
+  
+      console.log('Updated Data:', updatedData); // Check if updatedData is correct
+      await addData(updatedData, !!editRow); // Call addData with updated data
+  
       handleClose();
     } catch (error) {
       console.error('Error in handleSave:', error.message);
     }
   };
-
+  
   const categories = {
     expense: [
       { name: 'Food', emoji: '🍽️' },
