@@ -88,20 +88,39 @@ export default function CustomTable() {
       console.error('Error adding data', error);
     }
   };
-
   const updateEntry = async (updatedData) => {
     try {
+      // Capture the current date and time in IST
+      const currentISTDateTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+      const currentISTDate = currentISTDateTime.split(", ")[0];
+      const currentISTTime = currentISTDateTime.split(", ")[1];
+  // Log the captured date and time
+console.log("Current IST Date:", currentISTDate);
+console.log("Current IST Time:", currentISTTime);
+      // Update the date and time fields in the updatedData object
+      updatedData.date = currentISTDate;
+      updatedData.time = currentISTTime;
+  
+      // Log to ensure the data contains the time
+      console.log("Updated Data to be sent to the server:", updatedData);
+  
       const response = await axios.put(`http://localhost:3000/api/entries/${updatedData.id}`, updatedData);
+  
       if (response.status === 200) {
+        // Update the state with the new data including the updated time
         setData((prevData) => prevData.map((row) => (row.id === updatedData.id ? updatedData : row)));
         setSuccessMessage('Entry updated successfully!');
         calculateTotals(data.map((row) => (row.id === updatedData.id ? updatedData : row)));
+        
+        // Log to confirm the update
+        console.log("Update successful:", response.data);
       }
     } catch (error) {
+      // Log any error that occurs
       console.error('Error updating data', error);
     }
   };
-
+  
   const deleteEntry = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/entries/${id}`);
@@ -395,13 +414,13 @@ export default function CustomTable() {
             <TableRow>
               <TableCell sx={{ width: '100px', padding: '8px', borderRight: '1px solid #ddd' }}>ID</TableCell>
               <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>DATE</TableCell>
-              <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>TIME</TableCell>
+             
               <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>CATEGORY</TableCell>
               <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>NOTE</TableCell>
               <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>EXPENSE</TableCell>
               <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>INCOME</TableCell>
               <TableCell align="right" sx={{ padding: '8px', borderRight: '1px solid #ddd' }}>AMOUNT</TableCell>
-              <TableCell align="right" sx={{ padding: '8px', borderRight: 'none' }}>ACTIONS</TableCell>
+              <TableCell align="" sx={{ padding: '8px', borderRight: 'none' }}>ACTIONS</TableCell>
             </TableRow>
           </TableHead>
         </MuiTable>
@@ -424,7 +443,7 @@ export default function CustomTable() {
                 >
                   <TableCell component="th" scope="row">{row.id}</TableCell>
                   <TableCell align="left">{row.date ? row.date.split(', ')[0] : 'N/A'}</TableCell>
-                  <TableCell align="left">{row.date ? (row.date.split(', ')[1] ? row.date.split(', ')[1] : 'N/A') : 'N/A'}</TableCell>
+                
                   <TableCell align="left">{row.category}</TableCell>
                   <TableCell align="left">{row.note}</TableCell>
                   <TableCell align="left">{row.expense ? row.expense : '-'}</TableCell>
@@ -504,10 +523,7 @@ export default function CustomTable() {
                   <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>Date:</td>
                   <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow?.date ? viewRow.date.split(', ')[0] : 'N/A'}</td>
                 </tr>
-                <tr>
-                  <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>Time:</td>
-                  <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow?.date ? (viewRow.date.split(', ')[1] ? viewRow.date.split(', ')[1] : 'N/A') : 'N/A'}</td>
-                </tr>
+               
                 <tr>
                   <td style={{ fontWeight: 'bold', padding: '8px 0', color: '#00796b' }}>Category:</td>
                   <td style={{ padding: '8px 0', color: '#00796b' }}>{viewRow.category}</td>

@@ -11,13 +11,14 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState('INR');
   const [note, setNote] = useState('-'); // State for the note
-
   const showHideClassName = show ? 'modal display-block' : 'modal display-none';
 
   useEffect(() => {
     if (editRow) {
       setActiveTab(editRow.expense ? 'expense' : 'income');
-      setDate(new Date(editRow.date));
+         // Set the date and time from editRow
+    const combinedDateTime = new Date(`${editRow.date} ${editRow.time}`);
+    setDate(combinedDateTime); // Set both date and time
       setAmount(editRow.amount);
       setCurrency(editRow.expense?.split(' ')[0] || editRow.income?.split(' ')[0] || 'INR');
       setNote(editRow.note); // Set note when editing
@@ -30,10 +31,6 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
   }, [editRow]);
 
 
-
-
-  
-
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -45,43 +42,37 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
       setSelectedExpenseCategory(category.name);
     }
   };
-
-
-
-
-
   
   const handleSave = async () => {
     try {
-      const category = activeTab === 'income' ? selectedIncomeCategory : selectedExpenseCategory;
-      if (!category || !amount || isNaN(amount)) {
-        throw new Error('All fields are required.');
-      }
-  
-      const currentDateTime = new Date();
-      const dateString = currentDateTime.toLocaleDateString();
-      const timeString = currentDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
-      const updatedData = {
-        id: editRow ? editRow.id : Date.now(),
-        date: dateString,
-        time: timeString, // Always update the time to the current time
-        category,
-        expense: activeTab === 'expense' ? `${currency} ${amount}` : '',
-        income: activeTab === 'income' ? `${currency} ${amount}` : '',
-        amount: parseFloat(amount),
-        note,
-      };
-  
-      console.log('Updated Data:', updatedData); // Check if updatedData is correct
-      await addData(updatedData, !!editRow); // Call addData with updated data
-  
-      handleClose();
+        const category = activeTab === 'income' ? selectedIncomeCategory : selectedExpenseCategory;
+        if (!category || !amount || isNaN(amount)) {
+            throw new Error('All fields are required.');
+        }
+
+        // Update with current date and time in IST format
+        const currentISTDateTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+        const currentDate = currentISTDateTime.split(", ")[0];
+        const currentTime = currentISTDateTime.split(", ")[1];
+
+        const updatedData = {
+            id: editRow ? editRow.id : Date.now(),
+            date: currentDate,
+            time: currentTime, // Ensure you set the time
+            category,
+            expense: activeTab === 'expense' ? `${currency} ${amount}` : '',
+            income: activeTab === 'income' ? `${currency} ${amount}` : '',
+            amount: parseFloat(amount),
+            note,
+        };
+
+        await addData(updatedData, !!editRow);
+        handleClose();
     } catch (error) {
-      console.error('Error in handleSave:', error.message);
+        console.error('Error in handleSave:', error.message);
     }
-  };
-  
+};
+
   const categories = {
     expense: [
       { name: 'Food', emoji: '🍽️' },

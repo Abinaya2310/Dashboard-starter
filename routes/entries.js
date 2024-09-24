@@ -15,10 +15,10 @@ router.get('/', async (req, res) => {
 
 // POST a new entry
 router.post('/', async (req, res) => {
-  const { id, date, category, note, expense, income, amount } = req.body;
+  const { id, date,time, category, note, expense, income, amount } = req.body;
 
   try {
-    const newEntry = new Entry({ id, date, category, note, expense, income, amount });
+    const newEntry = new Entry({ id, date,time,category, note, expense, income, amount });
 
     // Save the new entry
     await newEntry.save();
