@@ -31,6 +31,8 @@ const Popup = ({ handleClose, show, addData, editRow }) => {
   }, [editRow]);
 
 
+
+  
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
