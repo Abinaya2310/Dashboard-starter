@@ -2,8 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const AuditRecord = require('../models/AuditRecord'); // Adjust path if necessary
-const doc = new jsPDF();
-console.log(doc.getFontList()); // Check available fonts
+
 
 // GET all audit records from MongoDB
 router.get('/', async (req, res) => {

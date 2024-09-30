@@ -1,37 +1,27 @@
-
-body {
-  font-size: var(--base-font-size); /* Apply base font size */
-  color: var(--text-color);
-}
-
 .TableContainer {
-  margin: 20px;
+  margin: 20px auto;
+  width: 95%;
 }
 
-.Header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0px;
+.TableHeader th, .TableBodyContainer td {
+  text-align: center; /* Center alignment for both header and cells */
+  padding: 12px;
+  border-right: 1px solid #ddd; /* Adding lines between each category */
+  vertical-align: middle; /* Ensure content is vertically centered */
 }
 
-.Header h3 {
-  margin: 16px;
-  font-size: 2rem; /* Increased font size */
+.TableHeader th:last-child, .TableBodyContainer td:last-child {
+  border-right: none; /* Remove the border from the last column */
 }
 
-.Header Button {
-  margin-left: auto;
-  font-size: 1.4rem; /* Increased font size */
+.TableBodyContainer td {
+  border-bottom: 1px solid #ddd; /* Line between each row */
 }
 
-.TableHeader {
-  width: 100%;
-  overflow: hidden;
-  background: var(--header-background-color);
-  color: var(--header-text-color);
-  display: grid;
-  font-size: 24px;
+.TableHeader th {
+  background-color: #f5f5f5; /* Slight background color for header */
+  font-weight: bold;
+  border-bottom: 2px solid #ddd; /* Solid line separating the header from the rows */
 }
 
 .TableBodyContainer {
