@@ -1,3 +1,4 @@
+import AttachFileIcon from '@mui/icons-material/AttachFile'; // Import attachment icon
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import GetAppIcon from '@mui/icons-material/GetApp';
@@ -33,6 +34,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import Popup from '../Popup/Popup';
 import './Table.css';
 
+
+
 export default function CustomTable() {
   const [data, setData] = useState([]);
   const [totalIncome, setTotalIncome] = useState(0);
@@ -47,7 +50,38 @@ export default function CustomTable() {
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
   const [sortCriteria, setSortCriteria] = useState('');
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
+  const fileInputRefs = useRef({}); // Store refs for multiple rows
 
+  const handleAttachment = (row) => {
+    if (fileInputRefs.current[row.id]) {
+      fileInputRefs.current[row.id].click(); // Open file picker
+    }
+  };
+  
+  const handleFileChange = async (event, row) => {
+    const file = event.target.files[0];
+  
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('id', row.id); // Send the row ID
+  
+    try {
+      const response = await axios.post('http://localhost:3000/api/entries/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+  
+      if (response.status === 200) {
+        console.log('File uploaded successfully:', response.data.filePath);
+        alert('File uploaded successfully!');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('File upload failed.');
+    }
+  };
+  
   const newRowRef = useRef(null);
 
   useEffect(() => {
@@ -390,11 +424,7 @@ console.log("Current IST Time:", currentISTTime);
         </InputAdornment>
       ),
     }}
-  />
-
-
-
-        <select value={sortCriteria} onChange={handleSortChange} className="SortBox" style={{ marginRight: '10px' }}>
+  /> <select value={sortCriteria} onChange={handleSortChange} className="SortBox" style={{ marginRight: '10px' }}>
           <option value="">Sort By</option>
           <option value="all">All</option>
           <option value="today">Today</option>
@@ -403,12 +433,10 @@ console.log("Current IST Time:", currentISTTime);
           <option value="last1month">Last 1 Month</option>
           <option value="last1year">Last 1 Year</option>
         </select>
-
         <Button variant="contained" color="secondary" onClick={handleDownloadSortedData} style={{ marginRight: '10px' }}>Download</Button>
         <Button variant="contained" color="primary" onClick={handleOpenPopup} className="AddNewEntryButton">Add New Entry</Button>
       </div>
-
-      <div className="TableHeader">
+<div className="TableHeader">
         <MuiTable>
           <TableHead>
             <TableRow>
@@ -450,19 +478,38 @@ console.log("Current IST Time:", currentISTTime);
                   <TableCell align="left">{row.income ? row.income : '-'}</TableCell>
                   <TableCell align="left">{row.currency === 'USD' ? '$' : '₹'} {row.amount}</TableCell>
                   <TableCell align="left">
-                    <IconButton color="info" size="small" style={{ marginRight: 8 }} onClick={() => handleView(row)}>
-                      <VisibilityIcon />
-                    </IconButton>
-                    <IconButton color="primary" size="small" style={{ marginRight: 8 }} onClick={() => handleEdit(row)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton color="secondary" size="small" style={{ marginRight: 8 }} onClick={() => handleDownload(row)}>
-                      <GetAppIcon />
-                    </IconButton>
-                    <IconButton color="secondary" size="small" onClick={() => handleDeleteClick(row.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
+  <IconButton color="info" size="small" style={{ marginRight: 8 }} onClick={() => handleView(row)}>
+    <VisibilityIcon />
+  </IconButton>
+  <IconButton color="primary" size="small" style={{ marginRight: 8 }} onClick={() => handleEdit(row)}>
+    <EditIcon />
+  </IconButton>
+  <IconButton color="secondary" size="small" style={{ marginRight: 8 }} onClick={() => handleDownload(row)}>
+    <GetAppIcon />
+  </IconButton>
+  <IconButton color="secondary" size="small" style={{ marginRight: 8 }} onClick={() => handleDeleteClick(row.id)}>
+    <DeleteIcon />
+  </IconButton>
+
+  {/* Hidden file input */}
+  <input
+    type="file"
+    ref={(el) => (fileInputRefs.current[row.id] = el)}
+    style={{ display: 'none' }}
+    onChange={(event) => handleFileChange(event, row)}
+  />
+
+  <IconButton color="default" size="small" onClick={() => handleAttachment(row)}>
+    <AttachFileIcon />
+  </IconButton>
+
+  {row.filePath && (
+    <IconButton color="success" size="small" style={{ marginLeft: 8 }} onClick={() => window.open(`http://localhost:3000${row.filePath}`, '_blank')}>
+      <GetAppIcon />
+    </IconButton>
+  )}
+</TableCell>
+
                 </motion.tr>
               ))}
             </TableBody>
@@ -582,5 +629,8 @@ console.log("Current IST Time:", currentISTTime);
         <Alert onClose={() => setDeleteSuccessMessage('')} severity="success" sx={{ width: '100%' }}>{deleteSuccessMessage}</Alert>
       </Snackbar>
     </div>
+
+
+
   );
 }

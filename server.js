@@ -6,6 +6,10 @@ const Entry = require('./models/Entry'); // Import the Entry model
 
 const app = express();
 const auditRecordRoutes = require('./routes/auditrecords'); // AuditRecord route
+
+// Serve uploaded files publicly
+app.use('/uploads', express.static('uploads'));
+
 // Connect to MongoDB
 connectDB();
 

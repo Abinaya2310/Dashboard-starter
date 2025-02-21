@@ -1,11 +1,11 @@
 import { UilBars } from "@iconscout/react-unicons";
+
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SidebarData } from "../Data/data.js";
 import Logo from "../imgs/logo.png";
 import "./Sidebar.css";
-
 const Sidebar = () => {
   const [selected, setSelected] = useState(0);
   const [expanded, setExpaned] = useState(true);
@@ -55,15 +55,26 @@ const Sidebar = () => {
                 <item.icon />
                 <span>{item.heading}</span>
               </div>
+
+
+
+
+
             );
           })}
           {/* signoutIcon */}
           <div className="menuItem">
             {/* Additional functionality can go here */}
           </div>
+   
         </div>
       </motion.div>
     </>
+
+
+
+
+
   );
 };
 

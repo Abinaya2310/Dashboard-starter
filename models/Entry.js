@@ -41,6 +41,10 @@ const EntrySchema = new mongoose.Schema({
     default: 0,
     select: false, // Exclude this field from query results by default
   },
+  filePath: {
+    type: String,  // ✅ Store file path here
+    default: null, // Default is null when no file is uploaded
+  },
 });
 
 module.exports = mongoose.model('Entry', EntrySchema);

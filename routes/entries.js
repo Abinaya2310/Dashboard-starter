@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Entry = require('../models/Entry');
 const AuditRecord = require('../models/AuditRecord');
+const multer = require('multer');
 
 // GET all entries from MongoDB
 router.get('/', async (req, res) => {
@@ -115,7 +116,40 @@ router.delete('/:id', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+// Set up file storage
+const storage = multer.diskStorage({
+  destination: './uploads/', // Save files in the 'uploads' folder
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
 
+const upload = multer({ storage });
+
+// ✅ File Upload API (Saves file path in database)
+router.post('/upload', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const { id } = req.body;
+    const filePath = `/uploads/${req.file.filename}`;
+
+    const updatedEntry = await Entry.findOneAndUpdate(
+      { id }, // Find entry by ID
+      { filePath }, // Update filePath field
+      { new: true }
+    );
+
+    if (!updatedEntry) {
+      return res.status(404).json({ message: 'Entry not found' });
+    }
+
+    res.status(200).json({ message: 'File uploaded successfully', filePath });
+  } catch (error) {
+    res.status(500).json({ message: 'Error saving file path', error });
+  }
+});
 
 module.exports = router;
-
