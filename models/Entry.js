@@ -48,4 +48,3 @@ const EntrySchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Entry', EntrySchema);
-

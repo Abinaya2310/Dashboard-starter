@@ -6,13 +6,13 @@ import MainDash from './components/MainDash/MainDash.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import Analytics from './pages/Analytics';
 import AuditRecords from './pages/AuditRecords.jsx';
-import Customers from './pages/Customers';
+
 import Profile from './pages/Profile';
 import SettingsPage from './pages/SettingsPage.jsx';
 import ToDoList from './pages/ToDoList';
 
 
-
+import Transaction from './pages/Transaction.jsx';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -62,7 +62,7 @@ function App() {
             <Route path="/" element={<MainDash />} />
             <Route path="/dashboard" element={<MainDash />} />
             <Route path="/to-do-list" element={<ToDoList />} />
-            <Route path="/customers" element={<Customers />} />
+            <Route path="/transaction" element={<Transaction />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/auditrecords" element={<AuditRecords />} />
@@ -76,7 +76,6 @@ function App() {
 }
 
 export default App;
-
 
 
 

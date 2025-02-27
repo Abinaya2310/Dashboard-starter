@@ -3,14 +3,16 @@
   width: 95%;
 }
 
-.TableHeader th, .TableBodyContainer td {
+.TableHeader th,
+.TableBodyContainer td {
   text-align: center; /* Center alignment for both header and cells */
   padding: 12px;
   border-right: 1px solid #ddd; /* Adding lines between each category */
   vertical-align: middle; /* Ensure content is vertically centered */
 }
 
-.TableHeader th:last-child, .TableBodyContainer td:last-child {
+.TableHeader th:last-child,
+.TableBodyContainer td:last-child {
   border-right: none; /* Remove the border from the last column */
 }
 
@@ -62,7 +64,8 @@
 .Table td:nth-child(4), /* Category column */
 .Table th:nth-child(4), /* Category column header */
 .Table td:nth-child(7), /* Income column */
-.Table th:nth-child(7) { /* Income column header */
+.Table th:nth-child(7) {
+  /* Income column header */
   font-size: 3.5rem; /* Increase font size for specified columns */
 }
 
@@ -171,13 +174,17 @@ body.light-theme .searchQuery:focus {
 
 /* Dark Theme Styles for searchQuery */
 body.dark-theme .searchQuery {
-  background-color: var(--dark-grey-color); /* Dark grey background for dark mode */
+  background-color: var(
+    --dark-grey-color
+  ); /* Dark grey background for dark mode */
   color: var(--dark-text-color); /* Lighter text color for dark mode */
   border: 1px solid var(--dark-text-color); /* Dark text color as border */
 }
 
 body.dark-theme .searchQuery:focus {
-  border-color: var(--primary-dark-color); /* Custom primary color for dark mode */
+  border-color: var(
+    --primary-dark-color
+  ); /* Custom primary color for dark mode */
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Lighter shadow for dark mode */
 }
 
@@ -203,7 +210,7 @@ body.dark-theme .searchQuery:focus {
 
 /* Light Theme Styles for SortBox */
 body.light-theme .SortBox {
-  background-color:skyblue; /* Lighter background for light mode (AliceBlue) */
+  background-color: skyblue; /* Lighter background for light mode (AliceBlue) */
   color: #333; /* Darker text color for light mode */
   border: 1px solid #aaa; /* Light grey border */
 }
@@ -215,7 +222,9 @@ body.light-theme .SortBox:focus {
 
 /* Dark Theme Styles for SortBox */
 body.dark-theme .SortBox {
-  background-color: var(--dark-grey-color); /* Dark grey background for dark mode */
+  background-color: var(
+    --dark-grey-color
+  ); /* Dark grey background for dark mode */
   color: var(--dark-text-color); /* Lighter text color for dark mode */
   border: 1px solid var(--dark-text-color); /* Dark text color as border */
 }
@@ -227,11 +236,11 @@ body.dark-theme .SortBox option {
 }
 
 body.dark-theme .SortBox:focus {
-  border-color: var(--primary-color); /* Use primary color for dark mode focus */
+  border-color: var(
+    --primary-color
+  ); /* Use primary color for dark mode focus */
   box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
 }
-
-
 
 .AddNewEntryButton {
   margin-top: 0px;
@@ -247,7 +256,6 @@ body.dark-theme .SortBox:focus {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
-
 
 .AddNewEntryButton:hover {
   background-color: #2c387e;
@@ -279,5 +287,11 @@ body.dark-theme .AddNewEntryButton:focus {
   color: var(--text-color) !important;
 }
 
-
-
+.plus-button {
+  margin-left: 10px;
+  border-radius: 50%;
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 20px;
+}

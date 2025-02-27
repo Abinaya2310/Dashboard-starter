@@ -27,7 +27,7 @@ export const SidebarData = [
   },
   {
     icon: UilUsersAlt,
-    heading: "Customers",
+    heading: "Transaction",
   },
   {
     icon: UilPackage,

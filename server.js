@@ -1,11 +1,12 @@
-
 const express = require('express');
 const connectDB = require('./db');
 const cors = require('cors');
 const Entry = require('./models/Entry'); // Import the Entry model
-
-const app = express();
+const transactionsRouter = require('./routes/transactions');
 const auditRecordRoutes = require('./routes/auditrecords'); // AuditRecord route
+const transactionRoutes = require('./routes/transactions'); // Transaction route
+const Transaction = require('./models/Transaction');
+const app = express();
 
 // Serve uploaded files publicly
 app.use('/uploads', express.static('uploads'));
@@ -20,6 +21,8 @@ app.use(express.json());
 // Routes
 app.use('/api/entries', require('./routes/entries'));
 app.use('/api/auditrecords', auditRecordRoutes); // AuditRecord-related API
+app.use('/api/transactions', transactionRoutes); // Transaction-related API
+
 // New route to calculate total income and expense
 app.get('/api/total', async (req, res) => {
   try {
@@ -42,10 +45,5 @@ app.get('/api/total', async (req, res) => {
   }
 });
 
-
-
-
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
